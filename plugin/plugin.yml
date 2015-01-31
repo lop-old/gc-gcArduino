@@ -1,0 +1,9 @@
+Plugin Name: ArduinoGC-standard
+Plugin Version: 1.5.0
+Server Main: com.growcontrol.plugins.arduinogc.ArduinoGC.class
+Client Main: com.growcontrol.plugins.arduinogc.gui.ArduinoGC.class
+Author: lorenzop
+Website: http://www.growcontrol.com/
+Depend: []
+SoftDepend: []
+Requires: [ 'gnu.io.CommPortIdentifier' ]
