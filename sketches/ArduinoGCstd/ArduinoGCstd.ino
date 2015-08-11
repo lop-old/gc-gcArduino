@@ -204,7 +204,6 @@ void getIncomingChars() {
 
 void processCommand() {
   if (command.length() == 0) {
-    Serial << "\r\n";
     clearBuffer();
     return;
   }
