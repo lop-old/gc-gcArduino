@@ -256,6 +256,7 @@ void processCommand() {
   } else {
     Serial << padInt(OWN_ID, SIZE_ID) << "ERRORCM" << LINE_ENDING;
   }
+  clearBuffer();
 }
 
 
