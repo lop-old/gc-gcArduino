@@ -1,19 +1,28 @@
-resources
-bin
-build
-target
+# resources/
+bin/
+target/
+rpmbuild-root/
+out/
+build/
 
 .classpath
 .project
-.git
-.settings
+.git/
+.settings/
+/plugins
 
 *.class
+*.iml
+*.idea
 *.jar
+*.rpm
 *.war
 *.ear
 *.zip
 *.exe
 *.lock
-*.swp
 *.out
+*.swp
+.*.swp
+*~
+
