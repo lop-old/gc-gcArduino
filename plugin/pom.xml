@@ -40,7 +40,8 @@
 	</ciManagement>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<finalName>scant-${project.artifactId}-${project.version}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<!-- <finalName>scant-${project.artifactId}-${project.version}</finalName> -->
 		<resources>
 			<resource>
 				<directory>resources</directory>
