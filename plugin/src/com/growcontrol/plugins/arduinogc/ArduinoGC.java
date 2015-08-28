@@ -22,7 +22,7 @@ public class ArduinoGC extends gcServerPlugin {
 				PluginDefines.CONFIG_PATH,
 				PluginDefines.CONFIG_FILE,
 				PluginConfig.class,
-				true
+				ArduinoGC.class
 		);
 		if(this.config == null) {
 			this.fail("Failed to load "+PluginDefines.CONFIG_FILE);
