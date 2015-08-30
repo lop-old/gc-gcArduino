@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.gui;
+package com.growcontrol.plugins.arduinogc.client;
 
 import com.growcontrol.client.plugins.gcClientPlugin;
 

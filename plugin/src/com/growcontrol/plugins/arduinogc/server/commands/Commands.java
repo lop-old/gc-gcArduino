@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.commands;
+package com.growcontrol.plugins.arduinogc.server.commands;
 
 import com.poixson.commonjava.EventListener.xEvent;
 import com.poixson.commonjava.EventListener.xEvent.Priority;

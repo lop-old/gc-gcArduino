@@ -1,7 +1,8 @@
-package com.growcontrol.plugins.arduinogc;
+package com.growcontrol.plugins.arduinogc.server;
 
-import com.growcontrol.plugins.arduinogc.commands.Commands;
-import com.growcontrol.plugins.arduinogc.configs.PluginConfig;
+import com.growcontrol.plugins.arduinogc.PluginDefines;
+import com.growcontrol.plugins.arduinogc.server.commands.Commands;
+import com.growcontrol.plugins.arduinogc.server.configs.PluginConfig;
 import com.growcontrol.server.gcServerDefines;
 import com.growcontrol.server.plugins.gcServerPlugin;
 import com.poixson.commonapp.config.xConfigLoader;

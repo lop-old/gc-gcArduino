@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.configs;
+package com.growcontrol.plugins.arduinogc.server.configs;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.configs;
+package com.growcontrol.plugins.arduinogc.server.configs;
 
 import java.util.Map;
 import java.util.Set;
