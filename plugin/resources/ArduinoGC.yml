@@ -1,0 +1,13 @@
+Hardware:
+    - Type: USB
+      Name: 'test device usb'
+      Enabled: true
+      id: 2
+      Port: /dev/ttyUSB0
+      Baud: 115200
+    - Type: NET
+      Name: 'test device tcp'
+      Enabled: false
+      id: 11
+      Host: 192.168.11.50
+      Port: 23
