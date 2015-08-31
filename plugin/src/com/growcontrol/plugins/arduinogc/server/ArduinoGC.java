@@ -3,7 +3,6 @@ package com.growcontrol.plugins.arduinogc.server;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.commands.Commands;
 import com.growcontrol.plugins.arduinogc.server.configs.PluginConfig;
-import com.growcontrol.server.gcServerDefines;
 import com.growcontrol.server.plugins.gcServerPlugin;
 import com.poixson.commonapp.config.xConfigLoader;
 import com.poixson.commonjava.xLogger.xLog;
@@ -30,7 +29,7 @@ public class ArduinoGC extends gcServerPlugin {
 			return;
 		}
 		if(this.config.isFromResource())
-			xLog.getRoot(LOG_NAME).warning("Created default "+gcServerDefines.CONFIG_FILE);
+			xLog.getRoot(LOG_NAME).warning("Created default "+PluginDefines.CONFIG_FILE);
 		// register listeners
 		this.register(new Commands());
 	}
