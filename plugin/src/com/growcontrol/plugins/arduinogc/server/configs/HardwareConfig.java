@@ -40,20 +40,20 @@ public abstract class HardwareConfig implements xHashable {
 				// type
 				final String typeStr = config.getString(PluginDefines.CONFIG_HARDWARE_TYPE);
 				if(utils.isEmpty(typeStr)) throw new RuntimeException("Hardware type is required!");
-				final HardwareConfig hardware;
+				final HardwareConfig hw;
 				switch(typeStr.toLowerCase()) {
-				case "net":
-				case "tcp":
-					hardware = new HardwareConfigUSB(config);
-					break;
 				case "usb":
 				case "serial":
-					hardware = new HardwareConfigNet(config);
+					hw = new HardwareConfigNet(config);
+					break;
+				case "net":
+				case "tcp":
+					hw = new HardwareConfigUSB(config);
 					break;
 				default:
-					throw new RuntimeException("Unknown hardware type: "+typeStr);
+					throw new RuntimeException("Invalid hardware type: "+typeStr);
 				}
-				configs.put(hardware.getKey(), hardware);
+				configs.put(hw.getKey(), hw);
 			} catch (Exception e) {
 				log().trace(e);
 			}
