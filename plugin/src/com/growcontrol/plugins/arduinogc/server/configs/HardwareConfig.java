@@ -12,60 +12,63 @@ import com.poixson.commonjava.Utils.xHashable;
 import com.poixson.commonjava.xLogger.xLog;
 
 
-public class HardwareConfig implements xHashable {
+public abstract class HardwareConfig implements xHashable {
 	private static final String LOG_NAME = "CONFIG";
 
-	public final String key;
-
+	public final String name;
 	public final boolean enabled;
-	public final HardwareType type;
+	public final int id;
+
+	public final String key;
 
 
 
 	// configs from set
-	public static Map<String, HardwareConfig> get(final Set<Object> dataset) {
+	public static Map<String, HardwareConfig> getAll(final Set<Object> dataset) {
 		if(utils.isEmpty(dataset))
 			return null;
 		final Map<String, HardwareConfig> configs = new HashMap<String, HardwareConfig>();
 		for(final Object obj : dataset) {
+			final Map<String, Object> datamap =
+					utilsObject.castMap(
+							String.class,
+							Object.class,
+							obj
+					);
+			final xConfig config = new xConfig(datamap);
 			try {
-				final Map<String, Object> datamap =
-						utilsObject.castMap(
-								String.class,
-								Object.class,
-								obj
-						);
-				final HardwareConfig cfg = get(datamap);
-				configs.put(cfg.getKey(), cfg);
+				// type
+				final String typeStr = config.getString(PluginDefines.CONFIG_HARDWARE_TYPE);
+				if(utils.isEmpty(typeStr)) throw new RuntimeException("Hardware type is required!");
+				final HardwareConfig hardware;
+				switch(typeStr.toLowerCase()) {
+				case "net":
+				case "tcp":
+					hardware = new HardwareConfigUSB(config);
+					break;
+				case "usb":
+				case "serial":
+					hardware = new HardwareConfigNet(config);
+					break;
+				default:
+					throw new RuntimeException("Unknown hardware type: "+typeStr);
+				}
+				configs.put(hardware.getKey(), hardware);
 			} catch (Exception e) {
-xLog.getRoot(LOG_NAME).trace(e);
+				log().trace(e);
 			}
 		}
 		return configs;
 	}
-	// config from map
-	public static HardwareConfig get(final Map<String, Object> datamap) {
-		if(utils.isEmpty(datamap))
-			return null;
-		final xConfig config = new xConfig(datamap);
+	public HardwareConfig(final xConfig config) {
+		if(config == null) throw new NullPointerException("config argument is required!");
+		this.name = config.getString(PluginDefines.CONFIG_HARDWARE_NAME);
 		// default to enabled if key doesn't exist
-		final boolean enabled =
+		this.enabled =
 				config.exists(PluginDefines.CONFIG_HARDWARE_ENABLED)
 				? config.getBool(PluginDefines.CONFIG_HARDWARE_ENABLED, false)
 				: true;
-		final HardwareType type = HardwareType.get(datamap);
-		return new HardwareConfig(
-				enabled,
-				type
-		);
-	}
-
-
-
-	// new config instance
-	public HardwareConfig(final boolean enabled, final HardwareType type) {
-		this.enabled = enabled;
-		this.type    = type;
+		this.id = config.getInt(PluginDefines.CONFIG_HARDWARE_ID, 0);
 		this.key = this.genKey();
 	}
 
@@ -79,29 +82,25 @@ xLog.getRoot(LOG_NAME).trace(e);
 	public String getKey() {
 		return this.key;
 	}
-	private String genKey() {
-		final StringBuilder str = new StringBuilder();
-
-		return str.toString();
-	}
+	protected abstract String genKey();
 	@Override
 	public boolean matches(final xHashable hashable) {
 		if(hashable == null || !(hashable instanceof HardwareConfig) )
 			return false;
 		final HardwareConfig config = (HardwareConfig) hashable;
-		if(this.enabled != config.enabled)
-			return false;
+//		if(this.enabled != config.enabled)
+//			return false;
 		return this.getKey().equalsIgnoreCase(config.getKey());
 	}
 
 
 
 	// logger
-	private volatile xLog _log = null;
-	public xLog log() {
-		if(this._log == null)
-			this._log = xLog.getRoot(LOG_NAME);
-		return this._log;
+	private static volatile xLog _log = null;
+	public static xLog log() {
+		if(_log == null)
+			_log = xLog.getRoot(LOG_NAME);
+		return _log;
 	}
 
 

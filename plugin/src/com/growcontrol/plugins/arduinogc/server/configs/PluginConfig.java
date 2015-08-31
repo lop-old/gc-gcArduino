@@ -42,14 +42,12 @@ public class PluginConfig extends xConfig {
 							Object.class,
 							PluginDefines.CONFIG_HARDWARE
 					);
-					this.hardwareConfigs = HardwareConfig.get(dataset);
+					this.hardwareConfigs = HardwareConfig.getAll(dataset);
 				}
 			}
 		}
 		return this.hardwareConfigs;
 	}
-
-
 
 
 
