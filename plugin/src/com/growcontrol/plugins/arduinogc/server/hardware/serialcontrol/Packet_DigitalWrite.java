@@ -24,8 +24,7 @@ public class Packet_DigitalWrite extends SerialPacket {
 				.append(utilsString.padFront(2, this.id))
 				.append("dw")
 				.append(utilsString.padFront(4, this.pin))
-				.append("000")
-				.append(this.value ? '1' : '0')
+				.append(this.value ? "HIGH" : "LOW_")
 				.toString();
 	}
 
