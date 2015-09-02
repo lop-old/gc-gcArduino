@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.server.connections.usb;
+package com.growcontrol.plugins.arduinogc.server.hardware.usb;
 
 import gnu.io.CommPortIdentifier;
 
