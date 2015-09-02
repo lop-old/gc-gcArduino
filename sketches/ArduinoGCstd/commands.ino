@@ -34,7 +34,7 @@ void commandAll() {
     arg = "LOW";
   }
   // set all to output mode off/low
-  if (arg.equals("OUTP") || arg.equals("LOW_")) {
+  if (arg.equals("OUTP") || arg.equals("LOW")) {
     for (int i = PIN_FROM; i < PIN_TO; i++) {
       pinMode     (i, OUTPUT);
       digitalWrite(i, LOW);
