@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.server.hardware.usb;
+package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 
 import gnu.io.CommPortIdentifier;
 
@@ -21,8 +21,8 @@ public final class FindComms {
 
 	private final Map<String, CommPortIdentifier> cached =
 			new HashMap<String, CommPortIdentifier>();
-	private final Set<EventListenerUSB> listeners =
-			new CopyOnWriteArraySet<EventListenerUSB>();
+	private final Set<EventListenerSerial> listeners =
+			new CopyOnWriteArraySet<EventListenerSerial>();
 
 	private final Object updateLock = new Object();
 	private final CoolDown cool = CoolDown.get("2s");
@@ -69,7 +69,7 @@ public final class FindComms {
 				return Collections.unmodifiableMap(this.cached);
 			final Set<String> lastSet = this.cached.keySet();
 			this.cached.clear();
-			final EventListenerUSB[] listeners = this.listeners.toArray(new EventListenerUSB[0]);
+			final EventListenerSerial[] listeners = this.listeners.toArray(new EventListenerSerial[0]);
 			final Enumeration<?> idents = CommPortIdentifier.getPortIdentifiers();
 			while(idents.hasMoreElements()) {
 				final CommPortIdentifier port = (CommPortIdentifier) idents.nextElement();
@@ -91,7 +91,7 @@ public final class FindComms {
 				// trigger added
 				if(!this.cached.containsKey(portName)) {
 					this.log().info("New comm port detected: "+portName);
-					for(final EventListenerUSB listener : listeners) {
+					for(final EventListenerSerial listener : listeners) {
 						listener.added(portName, port);
 					}
 				}
@@ -100,7 +100,7 @@ public final class FindComms {
 			if(lastSet.isEmpty()) {
 				for(final String portName : lastSet) {
 					this.log().warning("Comm port removed: "+portName);
-					for(final EventListenerUSB listener : listeners) {
+					for(final EventListenerSerial listener : listeners) {
 						listener.removed(portName);
 					}
 				}
@@ -116,17 +116,17 @@ public final class FindComms {
 
 
 
-	public void addListener(final EventListenerUSB listener) {
+	public void addListener(final EventListenerSerial listener) {
 		final CommPortIdentifier[] current;
 		synchronized(this.updateLock) {
-			current = (CommPortIdentifier[]) this.listeners.toArray(new EventListenerUSB[0]);
+			current = (CommPortIdentifier[]) this.listeners.toArray(new EventListenerSerial[0]);
 			this.listeners.add(listener);
 		}
 		for(final CommPortIdentifier ident : current) {
 			listener.added(ident.getName(), ident);
 		}
 	}
-	public void removeListener(final EventListenerUSB listener) {
+	public void removeListener(final EventListenerSerial listener) {
 		this.listeners.remove(listener);
 	}
 	public void clearListener() {

@@ -1,4 +1,4 @@
-package com.growcontrol.plugins.arduinogc.server.hardware.usb;
+package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPortEvent;
@@ -25,7 +25,7 @@ import com.poixson.commonjava.Utils.utils;
 //	private OutputStream out = null;
 //
 //	private boolean connected = false;
-public class ConnectionUSB extends ArduinoConnection implements SerialPortEventListener {
+public class ConnectionSerial extends ArduinoConnection implements SerialPortEventListener {
 
 	protected volatile String             portName  = null;
 	protected volatile CommPortIdentifier portIdent = null;
@@ -33,7 +33,7 @@ public class ConnectionUSB extends ArduinoConnection implements SerialPortEventL
 
 
 
-	public ConnectionUSB(final String portName, final int baud) {
+	public ConnectionSerial(final String portName, final int baud) {
 		if(utils.isEmpty(portName)) throw new NullPointerException("port argument is required!");
 		this.portIdent = FindComms.get(portName);
 		if(this.portIdent == null)
@@ -42,7 +42,7 @@ public class ConnectionUSB extends ArduinoConnection implements SerialPortEventL
 			this.portName = this.portIdent.getName();
 		this.baud = baud;
 	}
-	public ConnectionUSB(final CommPortIdentifier portIdent, final int baud) {
+	public ConnectionSerial(final CommPortIdentifier portIdent, final int baud) {
 		if(portIdent == null) throw new NullPointerException("portIdent argument is required!");
 		this.portIdent = portIdent;
 		this.portName  = portIdent.getName();
