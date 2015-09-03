@@ -87,10 +87,7 @@ public abstract class HardwareConfig implements xHashable {
 	public boolean matches(final xHashable hashable) {
 		if(hashable == null || !(hashable instanceof HardwareConfig) )
 			return false;
-		final HardwareConfig config = (HardwareConfig) hashable;
-//		if(this.enabled != config.enabled)
-//			return false;
-		return this.getKey().equalsIgnoreCase(config.getKey());
+		return this.getKey().equalsIgnoreCase(hashable.getKey());
 	}
 
 
