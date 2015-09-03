@@ -48,7 +48,7 @@ public abstract class HardwareConfig implements xHashable {
 					break;
 				case "net":
 				case "tcp":
-					hw = new HardwareConfigUSB(config);
+					hw = new HardwareConfigSerial(config);
 					break;
 				default:
 					throw new RuntimeException("Invalid hardware type: "+typeStr);

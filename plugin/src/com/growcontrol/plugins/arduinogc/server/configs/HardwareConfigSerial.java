@@ -4,14 +4,14 @@ import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.poixson.commonapp.config.xConfig;
 
 
-public class HardwareConfigUSB extends HardwareConfig {
+public class HardwareConfigSerial extends HardwareConfig {
 
 	public final String port;
 	public final int    baud;
 
 
 
-	public HardwareConfigUSB(final xConfig config) {
+	public HardwareConfigSerial(final xConfig config) {
 		super(config);
 		this.port = config.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
 		this.baud = config.getInt(   PluginDefines.CONFIG_HARDWARE_USB_BAUD,
