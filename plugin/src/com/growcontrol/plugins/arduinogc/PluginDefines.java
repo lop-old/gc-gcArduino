@@ -8,8 +8,8 @@ public final class PluginDefines {
 
 
 	// defaults
-	public static final int DEFAULT_USB_BAUD = 9600;
-	public static final int DEFAULT_NET_PORT = 23;
+	public static final int DEFAULT_SERIAL_BAUD = 9600;
+	public static final int DEFAULT_NET_PORT    = 23;
 
 
 	// plugin config

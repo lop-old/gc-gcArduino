@@ -15,7 +15,7 @@ public class HardwareConfigUSB extends HardwareConfig {
 		super(config);
 		this.port = config.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
 		this.baud = config.getInt(   PluginDefines.CONFIG_HARDWARE_USB_BAUD,
-				PluginDefines.DEFAULT_USB_BAUD);
+				PluginDefines.DEFAULT_SERIAL_BAUD);
 	}
 
 
