@@ -13,6 +13,8 @@ public class ArduinoGC extends gcServerPlugin {
 
 	private volatile PluginConfig config = null;
 
+	private static volatile boolean stopping = false;
+
 
 
 	@Override
@@ -38,7 +40,14 @@ public class ArduinoGC extends gcServerPlugin {
 
 	@Override
 	protected void onDisable() {
+		stopping = true;
 		this.unregister(Commands.class);
+	}
+
+
+
+	public static boolean isStopping() {
+		return stopping;
 	}
 
 
