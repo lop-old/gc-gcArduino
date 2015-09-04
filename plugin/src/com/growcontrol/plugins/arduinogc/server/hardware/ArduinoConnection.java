@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.ArduinoGC;
@@ -24,6 +25,9 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 
 	private static final Map<String, ArduinoConnection> connections =
 			new ConcurrentHashMap<String, ArduinoConnection>();
+
+	// ready device id's
+	protected final Set<Integer> ready = new CopyOnWriteArraySet<Integer>();
 
 //TODO: not used yet
 //	protected static final xTime HEARTBEAT = xTime.get("30s");
@@ -147,6 +151,12 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 			}
 			connections.clear();
 		}
+	}
+
+
+
+	public boolean isReady(final int id) {
+		return this.ready.contains(new Integer(id));
 	}
 
 
