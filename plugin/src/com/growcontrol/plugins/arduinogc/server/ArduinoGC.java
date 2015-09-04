@@ -1,10 +1,16 @@
 package com.growcontrol.plugins.arduinogc.server;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.commands.Commands;
+import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
 import com.growcontrol.plugins.arduinogc.server.configs.PluginConfig;
+import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.growcontrol.server.plugins.gcServerPlugin;
 import com.poixson.commonapp.config.xConfigLoader;
+import com.poixson.commonjava.Utils.Keeper;
 import com.poixson.commonjava.xLogger.xLog;
 
 
@@ -32,6 +38,16 @@ public class ArduinoGC extends gcServerPlugin {
 		}
 		if(this.config.isFromResource())
 			xLog.getRoot(LOG_NAME).warning("Created default "+PluginDefines.CONFIG_FILE);
+		// start hardware
+		{
+			final Map<String, HardwareConfig> hardwareConfigs =
+					this.config.getHardwareConfigs();
+			final Set<ArduinoConnection> connections =
+					ArduinoConnection.loadAll(
+							hardwareConfigs
+					);
+			Keeper.add(connections);
+		}
 		// register listeners
 		this.register(new Commands());
 	}
@@ -42,6 +58,8 @@ public class ArduinoGC extends gcServerPlugin {
 	protected void onDisable() {
 		stopping = true;
 		this.unregister(Commands.class);
+		// close hardware connections
+		ArduinoConnection.CloseAll();
 	}
 
 
