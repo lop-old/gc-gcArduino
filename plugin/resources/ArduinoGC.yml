@@ -4,7 +4,7 @@ Hardware:
       Enabled: true
       id: 2
       Port: /dev/ttyUSB0
-      Baud: 115200
+      Baud: 9600
     - Type: NET
       Name: 'test device tcp'
       Enabled: false

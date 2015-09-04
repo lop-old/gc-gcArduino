@@ -32,6 +32,7 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 //TODO: not used yet
 //	protected final Map<Integer, ArduinoPin> pinsOut = new HashMap<Integer, ArduinoPin>();
 //	protected final msgQueue queue = new msgQueue();
+//	private final Queue<Protocol> queue = new ConcurrentLinkedQueue<Protocol>();
 
 
 
@@ -147,11 +148,6 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 			connections.clear();
 		}
 	}
-
-
-
-//	public abstract void Process();
-//	public abstract void Send();
 
 
 

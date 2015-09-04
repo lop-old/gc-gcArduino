@@ -44,11 +44,11 @@ public abstract class HardwareConfig implements xHashable {
 				switch(typeStr.toLowerCase()) {
 				case "usb":
 				case "serial":
-					hw = new HardwareConfigNet(config);
+					hw = new HardwareConfigSerial(config);
 					break;
 				case "net":
 				case "tcp":
-					hw = new HardwareConfigSerial(config);
+					hw = new HardwareConfigNet(config);
 					break;
 				default:
 					throw new RuntimeException("Invalid hardware type: "+typeStr);

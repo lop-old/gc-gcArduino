@@ -12,6 +12,10 @@ public final class PluginDefines {
 	public static final int DEFAULT_NET_PORT    = 23;
 
 
+	public static final char[] SERIAL_LINE_ENDINGS = { ';', '\r', '\n' };
+	public static final String SERIAL_LINE_ENDING  = ";\n";
+
+
 	// plugin config
 	public static final String CONFIG_PATH = utilsDirFile.mergePaths("plugins", "ArduinoGC");
 	public static final String CONFIG_FILE = "ArduinoGC.yml";
