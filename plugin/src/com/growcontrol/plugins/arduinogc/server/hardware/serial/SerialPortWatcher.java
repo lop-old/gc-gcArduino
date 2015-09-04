@@ -1,16 +1,14 @@
 package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 
-import gnu.io.CommPortIdentifier;
-
 import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import jssc.SerialPortList;
+
 import com.poixson.commonjava.Utils.CoolDown;
-import com.poixson.commonjava.Utils.utils;
+import com.poixson.commonjava.Utils.Keeper;
 import com.poixson.commonjava.xLogger.xLog;
 
 
@@ -19,10 +17,9 @@ public final class SerialPortWatcher {
 	private static volatile SerialPortWatcher instance = null;
 	private static final Object instanceLock = new Object();
 
-	private final Map<String, CommPortIdentifier> cached =
-			new HashMap<String, CommPortIdentifier>();
-	private final Set<EventListenerSerial> listeners =
-			new CopyOnWriteArraySet<EventListenerSerial>();
+	private final Set<String> cached = new CopyOnWriteArraySet<String>();
+	private final Set<SerialPortWatchListener> listeners =
+			new CopyOnWriteArraySet<SerialPortWatchListener>();
 
 	private final Object updateLock = new Object();
 	private final CoolDown cool = CoolDown.get("2s");
@@ -33,8 +30,10 @@ public final class SerialPortWatcher {
 	public static SerialPortWatcher get() {
 		if(instance == null) {
 			synchronized(instanceLock) {
-				if(instance == null)
+				if(instance == null) {
 					instance = new SerialPortWatcher();
+					Keeper.add(instance);
+				}
 			}
 		}
 		return instance;
@@ -42,94 +41,70 @@ public final class SerialPortWatcher {
 
 
 
-	// get by port name
-	public static CommPortIdentifier get(final String portName) {
-		return get()
-			.getByName(portName);
-	}
-	public CommPortIdentifier getByName(final String portName) {
-		if(utils.isEmpty(portName)) throw new NullPointerException("portName argument is required!");
-		// get available comm ports
-		final Map<String, CommPortIdentifier> map = this.getAllPorts();
-		if(utils.isEmpty(map))
-			return null;
-		return map.get(portName.toLowerCase());
-	}
-
-
-
 	// get all ports
-	public static Map<String, CommPortIdentifier> getAll() {
+	public static Set<String> getAll() {
 		return get()
 			.getAllPorts();
 	}
-	public Map<String, CommPortIdentifier> getAllPorts() {
-		synchronized(this.updateLock) {
-			if(!this.cool.runAgain())
-				return Collections.unmodifiableMap(this.cached);
-			final Set<String> lastSet = this.cached.keySet();
-			this.cached.clear();
-			final EventListenerSerial[] listeners = this.listeners.toArray(new EventListenerSerial[0]);
-			final Enumeration<?> idents = CommPortIdentifier.getPortIdentifiers();
-			while(idents.hasMoreElements()) {
-				final CommPortIdentifier port = (CommPortIdentifier) idents.nextElement();
-				final String portName = port.getName();
-				final int    portType = port.getPortType();
-				switch(portType) {
-				case CommPortIdentifier.PORT_SERIAL:
-					this.cached.put(portName, port);
-					break;
-				case CommPortIdentifier.PORT_RS485:
-				case CommPortIdentifier.PORT_PARALLEL:
-				case CommPortIdentifier.PORT_I2C:
-				case CommPortIdentifier.PORT_RAW:
-					break;
-				default:
-					throw new RuntimeException("Unknown port type: "+
-							Integer.toString(portType));
-				}
-				// trigger added
-				if(!this.cached.containsKey(portName)) {
+	public Set<String> getAllPorts() {
+		// use cache
+		if(this.cool.runAgain()) {
+			synchronized(this.updateLock) {
+				log().finest("Updating comm ports cache..");
+				final Set<String> lastCached = new HashSet<String>(this.cached);
+				this.cached.clear();
+				final SerialPortWatchListener[] listeners =
+						this.listeners.toArray(new SerialPortWatchListener[0]);
+				final String[] ports = SerialPortList.getPortNames();
+				for(final String portName : ports) {
+					this.cached.add(portName);
 					this.log().info("New comm port detected: "+portName);
-					for(final EventListenerSerial listener : listeners) {
-						listener.added(portName, port);
+					// trigger added
+					if(!lastCached.contains(portName)) {
+						for(final SerialPortWatchListener listener : listeners)
+							listener.newPort(portName);
+					}
+				} // end for
+				// trigger removed
+				if(!lastCached.isEmpty()) {
+					for(final String portName : lastCached) {
+						if(!this.cached.contains(portName)) {
+							this.log().warning("Comm port removed: "+portName);
+							// trigger removed
+							for(final SerialPortWatchListener listener : listeners)
+								listener.removedPort(portName);
+						}
 					}
 				}
-			} // end while
-			// trigger removed
-			if(lastSet.isEmpty()) {
-				for(final String portName : lastSet) {
-					this.log().warning("Comm port removed: "+portName);
-					for(final EventListenerSerial listener : listeners) {
-						listener.removed(portName);
-					}
-				}
+			} // end synchronized
+		} // end cool
+		return Collections.unmodifiableSet(this.cached);
+	}
+
+
+//	public void addListener(final EventListenerSerial listener) {
+//		this.addListener(listener, false);
+//	}
+	public void addListener(final SerialPortWatchListener listener,
+			final boolean triggerExisting) {
+		if(listener == null) throw new NullPointerException("listener argument is required!");
+		if(triggerExisting) {
+			final String[] current;
+			synchronized(this.updateLock) {
+				current = this.cached.toArray(new String[0]);
+				this.listeners.add(listener);
 			}
-		} // end synchronized
-		return Collections.unmodifiableMap(this.cached);
-	}
-
-
-
-	public FindComms() {
-	}
-
-
-
-	public void addListener(final EventListenerSerial listener) {
-		final CommPortIdentifier[] current;
-		synchronized(this.updateLock) {
-			current = (CommPortIdentifier[]) this.listeners.toArray(new EventListenerSerial[0]);
+			for(final String portName : current) {
+				listener.newPort(portName);
+			}
+		} else {
 			this.listeners.add(listener);
 		}
-		for(final CommPortIdentifier ident : current) {
-			listener.added(ident.getName(), ident);
-		}
 	}
-	public void removeListener(final EventListenerSerial listener) {
+	public void removeListener(final SerialPortWatchListener listener) {
 		this.listeners.remove(listener);
 	}
-	public void clearListener() {
+	public void clearListeners() {
 		this.listeners.clear();
 	}
 
