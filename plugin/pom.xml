@@ -12,7 +12,6 @@
 	<url>http://growcontrol.com</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<rxtx-rebundled-version>2.1-7r2-4</rxtx-rebundled-version>
 		<junit-version>4.12</junit-version>
 		<maven-compiler-plugin-version>3.3</maven-compiler-plugin-version>
 		<surefire-version>2.18.1</surefire-version>
@@ -134,12 +133,6 @@
 			<artifactId>junit</artifactId>
 			<version>${junit-version}</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<!-- http://dev.root1.de/projects/rxtx-rebundled/wiki -->
-			<groupId>de.root1</groupId>
-			<artifactId>rxtx-rebundled</artifactId>
-			<version>${rxtx-rebundled-version}</version>
 		</dependency>
 <!--
 		<dependency>
