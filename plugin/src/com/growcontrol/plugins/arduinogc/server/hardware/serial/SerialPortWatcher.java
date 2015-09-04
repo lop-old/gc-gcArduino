@@ -14,9 +14,9 @@ import com.poixson.commonjava.Utils.utils;
 import com.poixson.commonjava.xLogger.xLog;
 
 
-public final class FindComms {
+public final class SerialPortWatcher {
 
-	private static volatile FindComms instance = null;
+	private static volatile SerialPortWatcher instance = null;
 	private static final Object instanceLock = new Object();
 
 	private final Map<String, CommPortIdentifier> cached =
@@ -30,11 +30,11 @@ public final class FindComms {
 
 
 	// get instance
-	public static FindComms get() {
+	public static SerialPortWatcher get() {
 		if(instance == null) {
 			synchronized(instanceLock) {
 				if(instance == null)
-					instance = new FindComms();
+					instance = new SerialPortWatcher();
 			}
 		}
 		return instance;
