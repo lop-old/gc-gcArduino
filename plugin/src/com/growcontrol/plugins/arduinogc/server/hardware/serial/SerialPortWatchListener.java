@@ -3,7 +3,7 @@ package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 import gnu.io.CommPortIdentifier;
 
 
-public interface SerialPortWatchEvent {
+public interface SerialPortWatchListener {
 
 
 	public void added(  final String name, final CommPortIdentifier ident);
