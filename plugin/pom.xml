@@ -40,7 +40,6 @@
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<finalName>${project.artifactId}-${project.version}</finalName>
-		<!-- <finalName>scant-${project.artifactId}-${project.version}</finalName> -->
 		<resources>
 			<resource>
 				<directory>resources</directory>
@@ -77,24 +76,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${maven-shade-plugin-version}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<finalName>${project.artifactId}-${project.version}</finalName>
-				</configuration>
-			</plugin>
--->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
