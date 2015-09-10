@@ -16,6 +16,7 @@ public abstract class HardwareConfig implements xHashable {
 	private static final String LOG_NAME = "CONFIG";
 
 	public final String name;
+	public final String title;
 	public final boolean enabled;
 	public final int id;
 
@@ -63,6 +64,13 @@ public abstract class HardwareConfig implements xHashable {
 	public HardwareConfig(final xConfig config) {
 		if(config == null) throw new NullPointerException("config argument is required!");
 		this.name = config.getString(PluginDefines.CONFIG_HARDWARE_NAME);
+		{
+			final String title = config.getString(PluginDefines.CONFIG_HARDWARE_TITLE);
+			this.title =
+					utils.isEmpty(title)
+					? this.name
+					: title;
+		}
 		// default to enabled if key doesn't exist
 		this.enabled =
 				config.exists(PluginDefines.CONFIG_HARDWARE_ENABLED)

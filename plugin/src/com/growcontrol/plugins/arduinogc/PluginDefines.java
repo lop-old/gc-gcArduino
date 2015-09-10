@@ -25,6 +25,7 @@ public final class PluginDefines {
 	public static final String CONFIG_HARDWARE = "Hardware";
 	public static final String CONFIG_HARDWARE_TYPE     = "Type";
 	public static final String CONFIG_HARDWARE_NAME     = "Name";
+	public static final String CONFIG_HARDWARE_TITLE    = "Title";
 	public static final String CONFIG_HARDWARE_ENABLED  = "Enabled";
 	public static final String CONFIG_HARDWARE_ID       = "id";
 	public static final String CONFIG_HARDWARE_USB_PORT = "Port";
