@@ -125,17 +125,6 @@
 		</dependency>
 -->
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>root1-releases</id>
-			<name>root1.de Releases Repository</name>
-			<layout>default</layout>
-			<url>http://nexus.root1.de/content/repositories/releases/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<reporting>
 		<plugins>
 			<plugin>
