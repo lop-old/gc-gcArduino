@@ -32,6 +32,7 @@ public final class PluginDefines {
 	public static final String CONFIG_HARDWARE_USB_BAUD = "Baud";
 	public static final String CONFIG_HARDWARE_NET_HOST = "Host";
 	public static final String CONFIG_HARDWARE_NET_PORT = "Port";
+	public static final String CONFIG_HARDWARE_PINS     = "Pins";
 
 
 }

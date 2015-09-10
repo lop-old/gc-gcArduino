@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.growcontrol.common.meta.MetaAddress;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.poixson.commonapp.config.xConfig;
 import com.poixson.commonjava.Utils.utils;
@@ -19,6 +20,8 @@ public abstract class HardwareConfig implements xHashable {
 	public final String title;
 	public final boolean enabled;
 	public final int id;
+
+	public final Map<Integer, MetaAddress> dests;
 
 	public final String key;
 
@@ -78,6 +81,16 @@ public abstract class HardwareConfig implements xHashable {
 				: true;
 		this.id = config.getInt(PluginDefines.CONFIG_HARDWARE_ID, 0);
 		this.key = this.genKey();
+		// destination pins
+		this.dests = HardwareConfigDestPins.getAll(
+				config.getSet(Object.class, PluginDefines.CONFIG_HARDWARE_PINS)
+		);
+	}
+
+
+
+	public Map<Integer, MetaAddress> getPins() {
+		return this.dests;
 	}
 
 
