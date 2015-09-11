@@ -22,11 +22,11 @@ public class HardwareConfigSerial extends HardwareConfig {
 
 	@Override
 	protected String genKey() {
-		final StringBuilder str = new StringBuilder();
-		str.append(this.port)
-			.append(':').append(this.baud)
-			.append(":#").append(this.id);
-		return str.toString();
+		return (new StringBuilder())
+				.append(this.port)
+				.append(':').append(this.baud)
+				.append(":#").append(this.id)
+				.toString();
 	}
 
 

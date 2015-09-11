@@ -22,11 +22,11 @@ public class HardwareConfigNet extends HardwareConfig {
 
 	@Override
 	protected String genKey() {
-		final StringBuilder str = new StringBuilder();
-		str.append(this.host)
-			.append(':').append(this.port)
-			.append(":#").append(this.id);
-		return str.toString();
+		return (new StringBuilder())
+				.append(this.host)
+				.append(':').append(this.port)
+				.append(":#").append(this.id)
+				.toString();
 	}
 
 

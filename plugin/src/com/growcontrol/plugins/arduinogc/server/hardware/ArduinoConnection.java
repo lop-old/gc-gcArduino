@@ -74,20 +74,22 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			final HardwareConfigSerial cfg = (HardwareConfigSerial) config;
 			final String portName = cfg.port;
 			final int    baud     = cfg.baud;
-			return new ConnectionSerial(
+			final ArduinoConnection connect = new ConnectionSerial(
 					portName,
 					baud
 			);
+			return connect;
 		}
 		// net config
 		if(config instanceof HardwareConfigNet) {
 			final HardwareConfigNet cfg = (HardwareConfigNet) config;
 			final String host = cfg.host;
 			final int    port = cfg.port;
-			return new ConnectionNet(
+			final ArduinoConnection connect = new ConnectionNet(
 					host,
 					port
 			);
+			return connect;
 		}
 		// unknown config
 		throw new RuntimeException("Unknown hardware config type: "+
@@ -126,7 +128,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			connections.add(connect);
 		}
 		if(count > 0)
-			log().info("Successfully connected to [ "+Integer.toString(count)+" ] devices!");
+			log().info("Connecting to [ "+Integer.toString(count)+" ] devices..");
 		if(failed > 0)
 			log().warning("Failed connecting to [ "+Integer.toString(failed)+" ] devices!");
 		return connections;

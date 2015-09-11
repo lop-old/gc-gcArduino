@@ -48,6 +48,7 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 
 
 	public ConnectionSerial(final String portName, final int baud) {
+		super();
 		if(utils.isEmpty(portName)) throw new NullPointerException("portName argument is required!");
 		if(!isValidBaud(baud))      throw new IllegalArgumentException("Invalid baud rate: "+Integer.toString(baud));
 		this.portName = portName;
@@ -75,6 +76,7 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 
 
 	public void send(final String msg) throws SerialPortException {
+System.out.println("SENDING: "+msg);
 		final byte[] bytes = (new StringBuilder())
 				.append(msg)
 				.append(PluginDefines.SERIAL_LINE_ENDING)
