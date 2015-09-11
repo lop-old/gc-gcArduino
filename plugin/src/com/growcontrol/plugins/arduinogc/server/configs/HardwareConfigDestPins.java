@@ -21,6 +21,7 @@ public final class HardwareConfigDestPins {
 			return null;
 		final Map<Integer, MetaAddress> pins = new HashMap<Integer, MetaAddress>();
 		for(final Object obj : dataset) {
+			// address => pin
 			final Map<String, Object> datamap =
 					utilsObject.castMap(
 							String.class,
@@ -28,7 +29,12 @@ public final class HardwareConfigDestPins {
 							obj
 					);
 			for(final Entry<String, Object> entry : datamap.entrySet()) {
-				System.out.println("<< "+entry.getKey()+" :: "+entry.getValue()+" >>");
+				final String addressStr = entry.getKey();
+				final MetaAddress address = MetaAddress.get(addressStr);
+				if(address == null) throw new RuntimeException("Invalid pin destination address in config: "+addressStr);
+				final Integer pin = (Integer) entry.getValue();
+				if(pin == null) throw new RuntimeException("Invalid pin in config: "+entry.getKey());
+				pins.put(pin, address);
 			}
 		}
 		return pins;
