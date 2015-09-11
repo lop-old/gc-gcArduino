@@ -1,5 +1,7 @@
 package com.growcontrol.plugins.arduinogc.server.hardware.net;
 
+import com.growcontrol.common.meta.MetaAddress;
+import com.growcontrol.common.meta.MetaEvent;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.growcontrol.plugins.arduinogc.server.hardware.serial.ConnectionSerial;
 import com.poixson.commonjava.Utils.utils;
@@ -29,6 +31,17 @@ public class ConnectionNet extends ArduinoConnection {
 //TODO:
 
 		log().info("Connecting to.. "+this.key);
+	}
+
+
+
+	@Override
+	public void onMetaEvent(final MetaEvent event) {
+		final MetaAddress destAddr = event.destination;
+		if(destAddr == null) throw new NullPointerException("Unexpected null destination address!");
+
+System.out.println("GOT EVENT: "+event.destination.hash);
+
 	}
 
 

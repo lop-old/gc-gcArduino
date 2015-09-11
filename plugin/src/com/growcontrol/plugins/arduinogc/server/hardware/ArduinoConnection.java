@@ -3,10 +3,14 @@ package com.growcontrol.plugins.arduinogc.server.hardware;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.growcontrol.common.meta.MetaAddress;
+import com.growcontrol.common.meta.MetaListener;
+import com.growcontrol.common.meta.MetaRouter;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.ArduinoGC;
 import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
@@ -20,7 +24,7 @@ import com.poixson.commonjava.Utils.xHashable;
 import com.poixson.commonjava.xLogger.xLog;
 
 
-public abstract class ArduinoConnection implements xCloseable, xHashable {
+public abstract class ArduinoConnection implements MetaListener, xCloseable, xHashable {
 	private static final String LOG_NAME = ArduinoGC.LOG_NAME;
 
 	private static final Map<String, ArduinoConnection> connections =
@@ -28,6 +32,8 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 
 	// ready device id's
 	protected final Set<Integer> ready = new CopyOnWriteArraySet<Integer>();
+
+	protected final Map<Integer, MetaAddress> dests = new ConcurrentHashMap<Integer, MetaAddress>();
 
 //TODO: not used yet
 //	protected static final xTime HEARTBEAT = xTime.get("30s");
@@ -55,6 +61,7 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 			final ArduinoConnection connect = ArduinoConnection.load(config);
 			if(connect == null)
 				return null;
+			connect.dests.putAll(config.getPins());
 			connections.put(key, connect);
 			return connect;
 		}
@@ -123,6 +130,26 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 
 
 
+	protected ArduinoConnection() {
+	}
+
+
+
+	public Integer DestAddressToPin(final String addressStr) {
+		final MetaAddress address = MetaAddress.get(addressStr);
+		if(!this.dests.containsValue(address))
+			return null;
+		for(final Entry<Integer, MetaAddress> entry : this.dests.entrySet()) {
+			final int         pin  = entry.getKey().intValue();
+			final MetaAddress addr = entry.getValue();
+			if(addr.matches(address))
+				return pin;
+		}
+		return null;
+	}
+
+
+
 	public static void Close(final ConnectionSerial connect) {
 		utils.safeClose(connect);
 		synchronized(connections) {
@@ -157,6 +184,46 @@ public abstract class ArduinoConnection implements xCloseable, xHashable {
 
 	public boolean isReady(final int id) {
 		return this.ready.contains(new Integer(id));
+	}
+
+
+
+	public void Process(final String line) {
+		if(utils.isEmpty(line))
+			return;
+		if(line.length() < 4)
+			throw new RuntimeException("Invalid packet length! "+line);
+		// parse packet
+		final int    id;
+		final String cmd;
+		try {
+			id  = Integer.valueOf(line.substring(0, 2));
+			cmd = line.substring(2, 4);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		// handle packet command
+		switch(cmd) {
+		case "id":
+			log().get("id:"+Integer.toString(id))
+					.info("Found arduino version: "+line.substring(4));
+			// register destination addresses
+			final MetaRouter router = MetaRouter.get();
+			for(final Entry<Integer, MetaAddress> entry : this.dests.entrySet()) {
+				final MetaAddress address = entry.getValue();
+				router.register(
+						address,
+						this
+				);
+			}
+			this.ready.add(id);
+			break;
+		case "dw":
+System.out.println("Got Packet: "+line);
+			break;
+		default:
+			throw new RuntimeException("Unknown packet command: "+line);
+		}
 	}
 
 

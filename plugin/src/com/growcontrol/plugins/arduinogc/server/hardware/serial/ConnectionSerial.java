@@ -7,9 +7,14 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
+import com.growcontrol.common.meta.MetaAddress;
+import com.growcontrol.common.meta.MetaEvent;
+import com.growcontrol.common.meta.MetaType;
+import com.growcontrol.common.meta.metaTypes.MetaIO;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.poixson.commonjava.Utils.utils;
+import com.poixson.commonjava.Utils.utilsString;
 import com.poixson.commonjava.Utils.xHashable;
 
 
@@ -112,12 +117,6 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 
 
 
-	public void Process(final String line) {
-System.out.println("LINE: "+line);
-	}
-
-
-
 	private void bufferAppend(final byte[] bytes) {
 		synchronized(this.buffer) {
 			this.buffer += (new String(bytes));
@@ -179,6 +178,49 @@ System.out.println("LINE: "+line);
 		} else {
 			log().warning("Unknown serial event type! "+event.getEventType());
 		}
+	}
+
+
+
+	@Override
+	public void onMetaEvent(final MetaEvent event) {
+		final MetaAddress destAddr = event.destination;
+		if(destAddr == null) throw new NullPointerException("Unexpected null destination address!");
+		if(!this.dests.containsValue(destAddr))
+			return;
+		final MetaType value = event.value;
+		if(value == null) throw new NullPointerException("Unexpected null meta value!");
+		// handle the event
+
+
+
+
+		if(value instanceof MetaIO) {
+			try {
+				final MetaIO val = (MetaIO) value;
+				final int pin = this.DestAddressToPin(destAddr.getKey());
+				this.send(
+						(new StringBuilder())
+						.append("00dw")
+						.append(utilsString.padFront(4, Integer.toString(pin), '0'))
+						.append(val.getValue() ? "HIGH" : "LOW")
+						.toString()
+				);
+			} catch (SerialPortException e) {
+				log().trace(e);
+			}
+		}
+
+
+		event.setHandled();
+		System.out.println("A"+(event.isHandled() ? "Handled!" : "Not handled.."));
+		event.setHandled(true);
+		System.out.println("B"+(event.isHandled() ? "Handled!" : "Not handled.."));
+
+		System.out.println("GOT EVENT: "+event.destination.hash);
+
+
+
 	}
 
 
