@@ -3,6 +3,7 @@ package com.growcontrol.plugins.arduinogc.server.configs;
 import java.util.Map;
 import java.util.Set;
 
+import com.growcontrol.common.gcCommonDefines;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.poixson.commonapp.config.xConfig;
 import com.poixson.commonjava.Utils.utils;
@@ -25,7 +26,7 @@ public class PluginConfig extends xConfig {
 
 	// plugin version
 	public String getVersion() {
-		final String value = this.getString(PluginDefines.CONFIG_VERSION);
+		final String value = this.getString(gcCommonDefines.CONFIG_VERSION);
 		if(utils.isEmpty(value))
 			return null;
 		return value;
