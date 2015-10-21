@@ -1,9 +1,9 @@
 package com.growcontrol.plugins.arduinogc.client;
 
-import com.growcontrol.client.plugins.gcClientPlugin;
+import com.growcontrol.api.clientapi.plugins.apiClientPlugin;
 
 
-public class ArduinoGC extends gcClientPlugin {
+public class ArduinoGC extends apiClientPlugin {
 
 
 

@@ -3,18 +3,18 @@ package com.growcontrol.plugins.arduinogc.server;
 import java.util.Map;
 import java.util.Set;
 
+import com.growcontrol.api.serverapi.plugins.apiServerPlugin;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.growcontrol.plugins.arduinogc.server.commands.Commands;
 import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
 import com.growcontrol.plugins.arduinogc.server.configs.PluginConfig;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
-import com.growcontrol.server.plugins.gcServerPlugin;
 import com.poixson.commonapp.config.xConfigLoader;
 import com.poixson.commonjava.Utils.Keeper;
 import com.poixson.commonjava.xLogger.xLog;
 
 
-public class ArduinoGC extends gcServerPlugin {
+public class ArduinoGC extends apiServerPlugin {
 	public static final String LOG_NAME = "ArduinoGC";
 
 	private volatile PluginConfig config = null;
