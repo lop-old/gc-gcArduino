@@ -16,6 +16,7 @@ import com.poixson.commonjava.xLogger.xLog;
 public abstract class HardwareConfig implements xHashable {
 	private static final String LOG_NAME = "CONFIG";
 
+	protected final xConfig config;
 	public final String name;
 	public final String title;
 	public final boolean enabled;
@@ -66,6 +67,7 @@ public abstract class HardwareConfig implements xHashable {
 	}
 	public HardwareConfig(final xConfig config) {
 		if(config == null) throw new NullPointerException("config argument is required!");
+		this.config = config;
 		this.name = config.getString(PluginDefines.CONFIG_HARDWARE_NAME);
 		{
 			final String title = config.getString(PluginDefines.CONFIG_HARDWARE_TITLE);
