@@ -22,10 +22,10 @@ public class HardwareConfigSerial extends HardwareConfig {
 
 	@Override
 	protected String genKey() {
+		final String port = this.config.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
 		return (new StringBuilder())
-				.append(this.port)
-				.append(':').append(this.baud)
-				.append(":#").append(this.id)
+				.append(port)
+				.append("#").append(this.id)
 				.toString();
 	}
 

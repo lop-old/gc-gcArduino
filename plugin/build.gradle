@@ -45,8 +45,8 @@ repositories {
 	jcenter()
 }
 dependencies {
-	compile fileTree( dir: '../../output/', include: ["gcAPI-${project.version}.jar"] )
 	compile fileTree( dir: '../../output/', include: ["gcCommon-${project.version}.jar"] )
+	compile fileTree( dir: '../../output/', include: ["gcAPI-${project.version}.jar"] )
 	testCompile "junit:junit:${junitVersion}"
 }
 

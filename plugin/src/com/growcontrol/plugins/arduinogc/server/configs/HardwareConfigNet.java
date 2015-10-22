@@ -22,10 +22,12 @@ public class HardwareConfigNet extends HardwareConfig {
 
 	@Override
 	protected String genKey() {
+		final String host = this.config.getString(PluginDefines.CONFIG_HARDWARE_NET_HOST);
+		final int    port = this.config.getInt(PluginDefines.CONFIG_HARDWARE_NET_PORT, PluginDefines.DEFAULT_NET_PORT);
 		return (new StringBuilder())
-				.append(this.host)
-				.append(':').append(this.port)
-				.append(":#").append(this.id)
+				.append(host)
+				.append(':').append(port)
+				.append("#").append(this.id)
 				.toString();
 	}
 

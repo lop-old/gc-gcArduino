@@ -2,11 +2,6 @@ package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 
 import java.nio.charset.Charset;
 
-import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
-import jssc.SerialPortException;
-
 import com.growcontrol.common.meta.MetaAddress;
 import com.growcontrol.common.meta.MetaEvent;
 import com.growcontrol.common.meta.MetaType;
@@ -16,6 +11,11 @@ import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.poixson.commonjava.Utils.utils;
 import com.poixson.commonjava.Utils.utilsString;
 import com.poixson.commonjava.Utils.xHashable;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 
 //	private static final int TIMEOUT = 2000;

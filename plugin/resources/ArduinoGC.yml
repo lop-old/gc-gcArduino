@@ -7,8 +7,9 @@ Hardware:
       Port: /dev/ttyUSB0
       Baud: 9600
       Pins:
-        - aaa: 6
-          bbb: 7
+        - aaa: 7
+          bbb: 8
+          ccc: 9
     - Type: NET
       Name: 'bbb'
       Title: 'test device tcp'
@@ -17,5 +18,5 @@ Hardware:
       Host: 192.168.11.50
       Port: 23
       Pins:
-        - ccc: 6
-          ddd: 7
+        - yyy: 6
+          zzz: 7

@@ -203,6 +203,9 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			return;
 		if(line.length() < 4)
 			throw new RuntimeException("Invalid packet length! "+line);
+
+System.out.println("RECEIVED: "+line);
+
 		// parse packet
 		final int    id;
 		final String cmd;
