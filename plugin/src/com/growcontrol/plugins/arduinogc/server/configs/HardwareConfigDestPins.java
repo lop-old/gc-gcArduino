@@ -1,5 +1,6 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,7 +38,7 @@ public final class HardwareConfigDestPins {
 				pins.put(pin, address);
 			}
 		}
-		return pins;
+		return Collections.unmodifiableMap(pins);
 	}
 
 
