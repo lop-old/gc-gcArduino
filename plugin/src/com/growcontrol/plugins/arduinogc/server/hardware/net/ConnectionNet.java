@@ -59,6 +59,10 @@ System.out.println("GOT EVENT: "+event.destination.hash);
 
 
 	@Override
+	public String getName() {
+		return this.toString();
+	}
+	@Override
 	public String toString() {
 		return this.key;
 	}

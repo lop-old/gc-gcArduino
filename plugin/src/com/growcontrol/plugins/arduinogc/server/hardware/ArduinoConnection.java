@@ -138,6 +138,10 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 
 	protected ArduinoConnection() {
 	}
+	@Override
+	public abstract String getName();
+	@Override
+	public abstract String toString();
 
 
 

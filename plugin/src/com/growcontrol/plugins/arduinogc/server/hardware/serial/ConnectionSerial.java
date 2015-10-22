@@ -103,6 +103,10 @@ System.out.println("SENDING: "+msg);
 
 
 	@Override
+	public String getName() {
+		return this.toString();
+	}
+	@Override
 	public String toString() {
 		return this.portName;
 	}
