@@ -61,11 +61,21 @@ public class ArduinoGC extends apiServerPlugin {
 		// close hardware connections
 		ArduinoConnection.CloseAll();
 	}
-
-
-
 	public static boolean isStopping() {
 		return stopping;
+	}
+
+
+
+	// logger
+	private static volatile xLog _log = null;
+	public static xLog getLogger() {
+		if(_log == null)
+			_log = xLog.getRoot(LOG_NAME);
+		return _log;
+	}
+	public static xLog getLogger(final String name) {
+		return getLogger().get(name);
 	}
 
 

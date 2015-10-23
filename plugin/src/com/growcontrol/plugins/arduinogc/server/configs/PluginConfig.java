@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.growcontrol.common.gcCommonDefines;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
+import com.growcontrol.plugins.arduinogc.server.ArduinoGC;
 import com.poixson.commonapp.config.xConfig;
 import com.poixson.commonjava.Utils.utils;
 import com.poixson.commonjava.xLogger.xLog;
@@ -53,11 +54,11 @@ public class PluginConfig extends xConfig {
 
 
 	// logger
-	private volatile xLog _log = null;
-	public xLog log() {
-		if(this._log == null)
-			this._log = xLog.getRoot(LOG_NAME);
-		return this._log;
+	private static volatile xLog _log = null;
+	public static xLog log() {
+		if(_log == null)
+			_log = ArduinoGC.getLogger(LOG_NAME);
+		return _log;
 	}
 
 

@@ -14,7 +14,6 @@ import com.poixson.commonjava.xLogger.xLog;
 
 
 public abstract class HardwareConfig implements xHashable {
-	private static final String LOG_NAME = "CONFIG";
 
 	protected final xConfig config;
 	public final String name;
@@ -116,11 +115,8 @@ public abstract class HardwareConfig implements xHashable {
 
 
 	// logger
-	private static volatile xLog _log = null;
 	public static xLog log() {
-		if(_log == null)
-			_log = xLog.getRoot(LOG_NAME);
-		return _log;
+		return PluginConfig.log();
 	}
 
 
