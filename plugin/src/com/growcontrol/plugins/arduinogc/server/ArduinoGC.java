@@ -27,6 +27,7 @@ public class ArduinoGC extends apiServerPlugin {
 	protected void onEnable() {
 		// load config
 		this.config = (PluginConfig) xConfigLoader.Load(
+				getLogger(),
 				PluginDefines.CONFIG_PATH,
 				PluginDefines.CONFIG_FILE,
 				PluginConfig.class,
