@@ -2,20 +2,22 @@ package com.growcontrol.plugins.arduinogc.server.hardware.serial;
 
 import java.nio.charset.Charset;
 
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
+
 import com.growcontrol.common.meta.MetaAddress;
 import com.growcontrol.common.meta.MetaEvent;
 import com.growcontrol.common.meta.MetaType;
 import com.growcontrol.common.meta.metaTypes.MetaIO;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
+import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
+import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfigSerial;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.poixson.commonjava.Utils.utils;
 import com.poixson.commonjava.Utils.utilsString;
 import com.poixson.commonjava.Utils.xHashable;
-
-import jssc.SerialPort;
-import jssc.SerialPortEvent;
-import jssc.SerialPortEventListener;
-import jssc.SerialPortException;
 
 
 //	private static final int TIMEOUT = 2000;
@@ -35,6 +37,8 @@ import jssc.SerialPortException;
 //TODO: will need to expect exceptions at every call, in case a port is disconnected
 public class ConnectionSerial extends ArduinoConnection implements SerialPortEventListener {
 
+	private final HardwareConfigSerial serialConfig;
+
 	// port info
 	private final String portName;
 	private final int    baud;
@@ -47,12 +51,17 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 
 
 
-	public ConnectionSerial(final String portName, final int baud) {
-		super();
-		if(utils.isEmpty(portName)) throw new NullPointerException("portName argument is required!");
-		if(!isValidBaud(baud))      throw new IllegalArgumentException("Invalid baud rate: "+Integer.toString(baud));
-		this.portName = portName;
-		this.baud     = baud;
+	public ConnectionSerial(final HardwareConfig config) {
+		super(config);
+//	public ConnectionSerial(final String portName, final int baud) {
+//		super();
+//		if(utils.isEmpty(portName)) throw new NullPointerException("portName argument is required!");
+//		if(!isValidBaud(baud))      throw new IllegalArgumentException("Invalid baud rate: "+Integer.toString(baud));
+//		this.portName = portName;
+//		this.baud     = baud;
+		this.serialConfig = (HardwareConfigSerial) config;
+		this.portName = this.serialConfig.getPort();
+		this.baud     = this.serialConfig.getBaud();
 		// open comm port
 		this.serial = new SerialPort(this.portName);
 		try {
@@ -75,7 +84,16 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 
 
 
-	public void send(final String msg) throws SerialPortException {
+	@Deprecated
+	@Override
+	public void send(final String msg) {
+		try {
+			this.sendSerial(msg);
+		} catch (SerialPortException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	public void sendSerial(final String msg) throws SerialPortException {
 System.out.println("SENDING: "+msg);
 		final byte[] bytes = (new StringBuilder())
 				.append(msg)
@@ -191,8 +209,11 @@ System.out.println("SENDING: "+msg);
 	@Override
 	public void onMetaEvent(final MetaEvent event) {
 		final MetaAddress destAddr = event.destination;
-		if(destAddr == null) throw new NullPointerException("Unexpected null destination address!");
-		if(!this.dests.containsValue(destAddr))
+		final String destAddrStr = destAddr.getKey();
+		if(destAddr == null || utils.isEmpty(destAddrStr))
+			throw new NullPointerException("Unexpected null destination address!");
+		// not for this connection
+		if(!this.serialConfig.dests.containsKeyK(destAddrStr))
 			return;
 		final MetaType value = event.value;
 		if(value == null) throw new NullPointerException("Unexpected null meta value!");
@@ -205,7 +226,7 @@ System.out.println("SENDING: "+msg);
 			try {
 				final MetaIO val = (MetaIO) value;
 				final int pin = this.DestAddressToPin(destAddr.getKey());
-				this.send(
+				this.sendSerial(
 						(new StringBuilder())
 						.append("00dw")
 						.append(utilsString.padFront(4, Integer.toString(pin), '0'))

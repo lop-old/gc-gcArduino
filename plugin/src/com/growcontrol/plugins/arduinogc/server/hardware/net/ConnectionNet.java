@@ -2,6 +2,8 @@ package com.growcontrol.plugins.arduinogc.server.hardware.net;
 
 import com.growcontrol.common.meta.MetaAddress;
 import com.growcontrol.common.meta.MetaEvent;
+import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
+import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfigNet;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
 import com.growcontrol.plugins.arduinogc.server.hardware.serial.ConnectionSerial;
 import com.poixson.commonjava.Utils.utils;
@@ -9,6 +11,8 @@ import com.poixson.commonjava.Utils.xHashable;
 
 
 public class ConnectionNet extends ArduinoConnection {
+
+	private final HardwareConfigNet netConfig;
 
 	// socket info
 	protected final String host;
@@ -22,11 +26,16 @@ public class ConnectionNet extends ArduinoConnection {
 
 
 
-	public ConnectionNet(final String host, final int port) {
-		super();
-		if(utils.isEmpty(host)) throw new NullPointerException("host argument is required!");
-		this.host = host;
-		this.port = port;
+	public ConnectionNet(final HardwareConfig config) {
+		super(config);
+//	public ConnectionNet(final String host, final int port) {
+//		super();
+//		if(utils.isEmpty(host)) throw new NullPointerException("host argument is required!");
+//		this.host = host;
+//		this.port = port;
+		this.netConfig = (HardwareConfigNet) config;
+		this.host = this.netConfig.getHost();
+		this.port = this.netConfig.getPort();
 		this.key = this.genKey();
 
 //TODO:
@@ -37,9 +46,18 @@ public class ConnectionNet extends ArduinoConnection {
 
 
 	@Override
+	public void send(final String msg) {
+System.out.println("CANT SENDING: "+msg);
+	}
+
+
+
+	@Override
 	public void onMetaEvent(final MetaEvent event) {
 		final MetaAddress destAddr = event.destination;
-		if(destAddr == null) throw new NullPointerException("Unexpected null destination address!");
+		final String destAddrStr = destAddr.getKey();
+		if(destAddr == null || utils.isEmpty(destAddrStr))
+			throw new NullPointerException("Unexpected null destination address!");
 
 System.out.println("GOT EVENT: "+event.destination.hash);
 

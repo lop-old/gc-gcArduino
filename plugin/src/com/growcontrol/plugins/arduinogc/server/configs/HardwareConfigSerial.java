@@ -1,7 +1,9 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
+import java.util.Map;
+
 import com.growcontrol.plugins.arduinogc.PluginDefines;
-import com.poixson.commonapp.config.xConfig;
+import com.poixson.commonapp.config.xConfigException;
 
 
 public class HardwareConfigSerial extends HardwareConfig {
@@ -11,20 +13,31 @@ public class HardwareConfigSerial extends HardwareConfig {
 
 
 
-	public HardwareConfigSerial(final xConfig config) {
-		super(config);
-		this.port = config.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
-		this.baud = config.getInt(   PluginDefines.CONFIG_HARDWARE_USB_BAUD,
-				PluginDefines.DEFAULT_SERIAL_BAUD);
+	public HardwareConfigSerial(final Map<String, Object> datamap)
+			throws xConfigException {
+		super(datamap);
+		this.port = this.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
+		this.baud = this.getInt(
+				PluginDefines.CONFIG_HARDWARE_USB_BAUD,
+				PluginDefines.DEFAULT_SERIAL_BAUD
+		);
+	}
+
+
+
+	public String getPort() {
+		return this.port;
+	}
+	public int getBaud() {
+		return this.baud;
 	}
 
 
 
 	@Override
 	protected String genKey() {
-		final String port = this.config.getString(PluginDefines.CONFIG_HARDWARE_USB_PORT);
 		return (new StringBuilder())
-				.append(port)
+				.append(this.port)
 				.append("#").append(this.id)
 				.toString();
 	}

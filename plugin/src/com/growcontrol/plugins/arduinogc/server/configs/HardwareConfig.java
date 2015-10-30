@@ -1,97 +1,113 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import com.growcontrol.common.meta.MetaAddress;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.poixson.commonapp.config.xConfig;
+import com.poixson.commonapp.config.xConfigException;
+import com.poixson.commonjava.Utils.DualKeyMap;
+import com.poixson.commonjava.Utils.DualKeyMapUnmodifiable;
 import com.poixson.commonjava.Utils.utils;
-import com.poixson.commonjava.Utils.utilsObject;
 import com.poixson.commonjava.Utils.xHashable;
-import com.poixson.commonjava.xLogger.xLog;
 
 
-public abstract class HardwareConfig implements xHashable {
+public abstract class HardwareConfig extends xConfig implements xHashable {
 
-	protected final xConfig config;
 	public final String name;
 	public final String title;
 	public final boolean enabled;
 	public final int id;
 
-	public final Map<Integer, MetaAddress> dests;
+	public final DualKeyMap<String, Integer, MetaAddress> dests;
 
 	public final String key;
 
 
 
-	// configs from set
-	public static Map<String, HardwareConfig> getAll(final Set<Object> dataset) {
-		if(utils.isEmpty(dataset))
-			return null;
-		final Map<String, HardwareConfig> configs = new HashMap<String, HardwareConfig>();
-		for(final Object obj : dataset) {
-			final Map<String, Object> datamap =
-					utilsObject.castMap(
-							String.class,
-							Object.class,
-							obj
-					);
-			final xConfig config = new xConfig(datamap);
-			try {
-				// type
-				final String typeStr = config.getString(PluginDefines.CONFIG_HARDWARE_TYPE);
-				if(utils.isEmpty(typeStr)) throw new RuntimeException("Hardware type is required!");
-				final HardwareConfig hw;
-				switch(typeStr.toLowerCase()) {
-				case "usb":
-				case "serial":
-					hw = new HardwareConfigSerial(config);
-					break;
-				case "net":
-				case "tcp":
-					hw = new HardwareConfigNet(config);
-					break;
-				default:
-					throw new RuntimeException("Invalid hardware type: "+typeStr);
-				}
-				configs.put(hw.getKey(), hw);
-			} catch (Exception e) {
-				log().trace(e);
-			}
-		}
-		return configs;
-	}
-	public HardwareConfig(final xConfig config) {
-		if(config == null) throw new NullPointerException("config argument is required!");
-		this.config = config;
-		this.name = config.getString(PluginDefines.CONFIG_HARDWARE_NAME);
+	public HardwareConfig(final Map<String, Object> datamap)
+			throws xConfigException {
+		super(datamap);
+		// hardware name
+		this.name = this.getString(PluginDefines.CONFIG_HARDWARE_NAME);
+		if(utils.isEmpty(this.name)) throw new xConfigException("Name is missing from config!");
+		// hardware title
 		{
-			final String title = config.getString(PluginDefines.CONFIG_HARDWARE_TITLE);
+			final String value = this.getStr(
+					PluginDefines.CONFIG_HARDWARE_NAME,
+					null
+			);
 			this.title =
-					utils.isEmpty(title)
+					utils.isEmpty(value)
 					? this.name
-					: title;
+					: value;
 		}
-		// default to enabled if key doesn't exist
+		// enabled - default to enabled if key doesn't exist
 		this.enabled =
-				config.exists(PluginDefines.CONFIG_HARDWARE_ENABLED)
-				? config.getBool(PluginDefines.CONFIG_HARDWARE_ENABLED, false)
+				this.exists(PluginDefines.CONFIG_HARDWARE_ENABLED)
+				? this.getBool(PluginDefines.CONFIG_HARDWARE_ENABLED, false)
 				: true;
-		this.id = config.getInt(PluginDefines.CONFIG_HARDWARE_ID, 0);
+		// hardware id
+		this.id = this.getInt(PluginDefines.CONFIG_HARDWARE_ID, 0);
+		// destination pin addresses
+		{
+			final Map<String, Integer> destMap = this.getMap(
+					String.class,
+					Integer.class,
+					PluginDefines.CONFIG_HARDWARE_PINS
+			);
+			final Map<String,  MetaAddress> strMap = new LinkedHashMap<String,  MetaAddress>();
+			final Map<Integer, MetaAddress> idMap  = new LinkedHashMap<Integer, MetaAddress>();
+			for(final Entry<String, Integer> entry : destMap.entrySet()) {
+				final String addrStr = entry.getKey().toLowerCase();
+				final Integer pinInt = entry.getValue();
+				final MetaAddress addr = MetaAddress.get(addrStr);
+				strMap.put(addr.getKey(), addr);
+				idMap.put( pinInt,        addr);
+			}
+			this.dests = new DualKeyMapUnmodifiable<String, Integer, MetaAddress>(strMap, idMap);
+		}
+		// hardware key
 		this.key = this.genKey();
-		// destination pins
-		this.dests = HardwareConfigDestPins.getAll(
-				config.getSet(Object.class, PluginDefines.CONFIG_HARDWARE_PINS)
-		);
 	}
 
 
 
-	public Map<Integer, MetaAddress> getPins() {
-		return this.dests;
+	public String getName() {
+		return this.name;
+	}
+	public String getTitle() {
+		return this.title;
+	}
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+	public int getId() {
+		return this.id;
+	}
+
+
+
+	public Map<String, MetaAddress> getPinsByAddr() {
+		return this.dests.getMapK();
+	}
+	public Map<Integer, MetaAddress> getPinsById() {
+		return this.dests.getMapJ();
+	}
+	public List<MetaAddress> getPins() {
+		@SuppressWarnings("unchecked")
+		final Collection<MetaAddress> addrs = this.dests.values();
+		if(utils.isEmpty(addrs))
+			return null;
+		return Collections.unmodifiableList(
+				new ArrayList<MetaAddress>(addrs)
+		);
 	}
 
 
@@ -110,13 +126,6 @@ public abstract class HardwareConfig implements xHashable {
 		if(hashable == null || !(hashable instanceof HardwareConfig) )
 			return false;
 		return this.getKey().equalsIgnoreCase(hashable.getKey());
-	}
-
-
-
-	// logger
-	public static xLog log() {
-		return PluginConfig.log();
 	}
 
 

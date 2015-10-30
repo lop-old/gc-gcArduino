@@ -1,42 +1,43 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import com.growcontrol.common.gcCommonDefines;
 import com.growcontrol.plugins.arduinogc.PluginDefines;
-import com.growcontrol.plugins.arduinogc.server.ArduinoGC;
 import com.poixson.commonapp.config.xConfig;
-import com.poixson.commonjava.Utils.utils;
-import com.poixson.commonjava.xLogger.xLog;
+import com.poixson.commonapp.config.xConfigException;
+import com.poixson.commonjava.Utils.utilsObject;
 
 
 public class PluginConfig extends xConfig {
-	private static final String LOG_NAME = "CONFIG";
+
+	public final String version;
 
 	private volatile Map<String, HardwareConfig> hardwareConfigs = null;
 	private final Object configLock = new Object();
 
 
 
-	public PluginConfig(final Map<String, Object> datamap) {
+	public PluginConfig(final Map<String, Object> datamap)
+			throws xConfigException {
 		super(datamap);
+		this.version = this.getString(gcCommonDefines.CONFIG_VERSION);
 	}
 
 
 
 	// plugin version
 	public String getVersion() {
-		final String value = this.getString(gcCommonDefines.CONFIG_VERSION);
-		if(utils.isEmpty(value))
-			return null;
-		return value;
+		return this.version;
 	}
 
 
 
 	// hardware configs
-	public Map<String, HardwareConfig> getHardwareConfigs() {
+	public Map<String, HardwareConfig> getHardwareConfigs()
+			throws xConfigException {
 		if(this.hardwareConfigs == null) {
 			synchronized(this.configLock){
 				if(this.hardwareConfigs == null) {
@@ -44,21 +45,39 @@ public class PluginConfig extends xConfig {
 							Object.class,
 							PluginDefines.CONFIG_HARDWARE
 					);
-					this.hardwareConfigs = HardwareConfig.getAll(dataset);
+					final Map<String, HardwareConfig> configs = new LinkedHashMap<String, HardwareConfig>();
+					for(final Object obj : dataset) {
+						final Map<String, Object> datamap = utilsObject.castMap(
+								String.class,
+								Object.class,
+								obj
+						);
+						final String typeStr = (String) datamap.get(PluginDefines.CONFIG_HARDWARE_TYPE);
+						final HardwareConfig cfg;
+						switch(typeStr.toUpperCase()) {
+						case "USB":
+						case "SERIAL": {
+							cfg = new HardwareConfigSerial(datamap);
+							break;
+						}
+						case "NET":
+						case "TCP":
+						case "ETHERNET":
+						case "WIFI":
+						case "WEB": {
+							cfg = new HardwareConfigNet(datamap);
+							break;
+						}
+						default: {
+							throw new xConfigException("Unknown hardware type: "+typeStr);
+						}
+						}
+						configs.put(cfg.getKey(), cfg);
+					}
 				}
 			}
 		}
 		return this.hardwareConfigs;
-	}
-
-
-
-	// logger
-	private static volatile xLog _log = null;
-	public static xLog log() {
-		if(_log == null)
-			_log = ArduinoGC.getLogger(LOG_NAME);
-		return _log;
 	}
 
 

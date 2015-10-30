@@ -27,13 +27,15 @@ import com.poixson.commonjava.xLogger.xLog;
 public abstract class ArduinoConnection implements MetaListener, xCloseable, xHashable {
 	private static final String LOG_NAME = ArduinoGC.LOG_NAME;
 
+	private final HardwareConfig config;
+
 	private static final Map<String, ArduinoConnection> connections =
 			new ConcurrentHashMap<String, ArduinoConnection>();
 
 	// ready device id's
 	protected final Set<Integer> ready = new CopyOnWriteArraySet<Integer>();
 
-	protected final Map<Integer, MetaAddress> dests = new ConcurrentHashMap<Integer, MetaAddress>();
+//	protected final Map<Integer, MetaAddress> dests = new ConcurrentHashMap<Integer, MetaAddress>();
 
 //TODO: not used yet
 //	protected static final xTime HEARTBEAT = xTime.get("30s");
@@ -61,7 +63,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			final ArduinoConnection connect = ArduinoConnection.load(config);
 			if(connect == null)
 				return null;
-			connect.dests.putAll(config.getPins());
+//			connect.dests.putAll(config.getPins());
 			connections.put(key, connect);
 			return connect;
 		}
@@ -71,25 +73,27 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			return null;
 		// serial config
 		if(config instanceof HardwareConfigSerial) {
-			final HardwareConfigSerial cfg = (HardwareConfigSerial) config;
-			final String portName = cfg.port;
-			final int    baud     = cfg.baud;
-			final ArduinoConnection connect = new ConnectionSerial(
-					portName,
-					baud
-			);
-			return connect;
+			return new ConnectionSerial(config);
+//			final HardwareConfigSerial cfg = (HardwareConfigSerial) config;
+//			final String portName = cfg.port;
+//			final int    baud     = cfg.baud;
+//			final ArduinoConnection connect = new ConnectionSerial(
+//					portName,
+//					baud
+//			);
+//			return connect;
 		}
 		// net config
 		if(config instanceof HardwareConfigNet) {
-			final HardwareConfigNet cfg = (HardwareConfigNet) config;
-			final String host = cfg.host;
-			final int    port = cfg.port;
-			final ArduinoConnection connect = new ConnectionNet(
-					host,
-					port
-			);
-			return connect;
+			return new ConnectionNet(config);
+//			final HardwareConfigNet cfg = (HardwareConfigNet) config;
+//			final String host = cfg.host;
+//			final int    port = cfg.port;
+//			final ArduinoConnection connect = new ConnectionNet(
+//					host,
+//					port
+//			);
+//			return connect;
 		}
 		// unknown config
 		throw new RuntimeException("Unknown hardware config type: "+
@@ -136,7 +140,8 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 
 
 
-	protected ArduinoConnection() {
+	protected ArduinoConnection(final HardwareConfig config) {
+		this.config = config;
 	}
 	@Override
 	public abstract String getName();
@@ -145,11 +150,16 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 
 
 
+	public abstract void send(final String msg);
+
+
+
 	public Integer DestAddressToPin(final String addressStr) {
 		final MetaAddress address = MetaAddress.get(addressStr);
-		if(!this.dests.containsValue(address))
+		final String addrStr = address.getKey();
+		if(!this.config.dests.containsKeyK(addrStr))
 			return null;
-		for(final Entry<Integer, MetaAddress> entry : this.dests.entrySet()) {
+		for(final Entry<Integer, MetaAddress> entry : this.config.dests.entrySetJ()) {
 			final int         pin  = entry.getKey().intValue();
 			final MetaAddress addr = entry.getValue();
 			if(addr.matches(address))
@@ -222,7 +232,7 @@ System.out.println("RECEIVED: "+line);
 					.info("Found arduino version: "+line.substring(4));
 			// register destination addresses
 			final MetaRouter router = MetaRouter.get();
-			for(final Entry<Integer, MetaAddress> entry : this.dests.entrySet()) {
+			for(final Entry<Integer, MetaAddress> entry : this.config.dests.entrySetJ()) {
 				final MetaAddress address = entry.getValue();
 				router.register(
 						address,

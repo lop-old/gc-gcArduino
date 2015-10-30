@@ -9,7 +9,8 @@ import com.growcontrol.plugins.arduinogc.server.commands.Commands;
 import com.growcontrol.plugins.arduinogc.server.configs.HardwareConfig;
 import com.growcontrol.plugins.arduinogc.server.configs.PluginConfig;
 import com.growcontrol.plugins.arduinogc.server.hardware.ArduinoConnection;
-import com.poixson.commonapp.config.xConfigLoader;
+import com.poixson.commonapp.config.xConfig;
+import com.poixson.commonapp.config.xConfigException;
 import com.poixson.commonjava.Utils.Keeper;
 import com.poixson.commonjava.xLogger.xLog;
 
@@ -26,7 +27,7 @@ public class ArduinoGC extends apiServerPlugin {
 	@Override
 	protected void onEnable() {
 		// load config
-		this.config = (PluginConfig) xConfigLoader.Load(
+		this.config = (PluginConfig) xConfig.Load(
 				getLogger(),
 				PluginDefines.CONFIG_PATH,
 				PluginDefines.CONFIG_FILE,
@@ -40,7 +41,7 @@ public class ArduinoGC extends apiServerPlugin {
 		if(this.config.isFromResource())
 			xLog.getRoot(LOG_NAME).warning("Created default "+PluginDefines.CONFIG_FILE);
 		// start hardware
-		{
+		try {
 			final Map<String, HardwareConfig> hardwareConfigs =
 					this.config.getHardwareConfigs();
 			final Set<ArduinoConnection> connections =
@@ -48,6 +49,10 @@ public class ArduinoGC extends apiServerPlugin {
 							hardwareConfigs
 					);
 			Keeper.add(connections);
+		} catch (xConfigException e) {
+			this.log().trace(e);
+			this.fail(e.getMessage());
+			return;
 		}
 		// register listeners
 		this.register(new Commands());

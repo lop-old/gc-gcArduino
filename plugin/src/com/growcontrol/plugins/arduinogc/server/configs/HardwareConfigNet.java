@@ -1,7 +1,9 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
+import java.util.Map;
+
 import com.growcontrol.plugins.arduinogc.PluginDefines;
-import com.poixson.commonapp.config.xConfig;
+import com.poixson.commonapp.config.xConfigException;
 
 
 public class HardwareConfigNet extends HardwareConfig {
@@ -11,23 +13,33 @@ public class HardwareConfigNet extends HardwareConfig {
 
 
 
-	public HardwareConfigNet(final xConfig config) {
-		super(config);
-		this.host = config.getString(PluginDefines.CONFIG_HARDWARE_NET_HOST);
-		this.port = config.getInt(   PluginDefines.CONFIG_HARDWARE_NET_PORT,
-				PluginDefines.DEFAULT_NET_PORT);
+	public HardwareConfigNet(final Map<String, Object> datamap)
+			throws xConfigException {
+		super(datamap);
+		this.host = this.getString(PluginDefines.CONFIG_HARDWARE_NET_HOST);
+		this.port = this.getInt(
+				PluginDefines.CONFIG_HARDWARE_NET_PORT,
+				PluginDefines.DEFAULT_NET_PORT
+		);
+	}
+
+
+
+	public String getHost() {
+		return this.host;
+	}
+	public int getPort() {
+		return this.port;
 	}
 
 
 
 	@Override
 	protected String genKey() {
-		final String host = this.config.getString(PluginDefines.CONFIG_HARDWARE_NET_HOST);
-		final int    port = this.config.getInt(PluginDefines.CONFIG_HARDWARE_NET_PORT, PluginDefines.DEFAULT_NET_PORT);
 		return (new StringBuilder())
-				.append(host)
-				.append(':').append(port)
-				.append("#").append(this.id)
+				.append(this.getHost())
+				.append(':').append(this.getPort())
+				.append("#").append(this.getId())
 				.toString();
 	}
 
