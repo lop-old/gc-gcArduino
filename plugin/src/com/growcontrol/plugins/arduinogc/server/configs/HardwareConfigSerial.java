@@ -21,6 +21,7 @@ public class HardwareConfigSerial extends HardwareConfig {
 				PluginDefines.CONFIG_HARDWARE_USB_BAUD,
 				PluginDefines.DEFAULT_SERIAL_BAUD
 		);
+		this.key = this.genKey();
 	}
 
 
@@ -37,8 +38,9 @@ public class HardwareConfigSerial extends HardwareConfig {
 	@Override
 	protected String genKey() {
 		return (new StringBuilder())
-				.append(this.port)
-				.append("#").append(this.id)
+				.append(this.getPort())
+				.append("#")
+				.append(this.getId())
 				.toString();
 	}
 

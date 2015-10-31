@@ -49,7 +49,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 
 
 	public static ArduinoConnection get(final HardwareConfig config) {
-		final String key = config.key;
+		final String key = config.getKey();
 		// existing connection
 		{
 			final ArduinoConnection connect = connections.get(key);
@@ -112,7 +112,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 		int failed = 0;
 		for(final HardwareConfig cfg : configs.values()) {
 			if(!cfg.enabled) {
-				log().fine("Arduino device is disabled: "+cfg.key+" - "+cfg.name);
+				log().fine("Arduino device is disabled: "+cfg.getKey()+" - "+cfg.name);
 				continue;
 			}
 			ArduinoConnection connect = null;
@@ -127,7 +127,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 				log().warning("Failed to open comm port: "+cfg.getKey());
 			} else {
 				count++;
-				log().info("Successfully connected to: "+cfg.getKey());
+				log().info("Successfully connected to: "+cfg.getKey()+" - "+cfg.getName());
 			}
 			connections.add(connect);
 		}

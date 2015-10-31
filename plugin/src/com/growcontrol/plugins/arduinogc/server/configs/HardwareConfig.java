@@ -27,7 +27,7 @@ public abstract class HardwareConfig extends xConfig implements xHashable {
 
 	public final DualKeyMap<String, Integer, MetaAddress> dests;
 
-	public final String key;
+	protected volatile String key = null;
 
 
 
@@ -57,24 +57,31 @@ public abstract class HardwareConfig extends xConfig implements xHashable {
 		this.id = this.getInt(PluginDefines.CONFIG_HARDWARE_ID, 0);
 		// destination pin addresses
 		{
-			final Map<String, Integer> destMap = this.getMap(
+			final Map<String, Object> destMap = this.getMap(
 					String.class,
-					Integer.class,
+					Object.class,
 					PluginDefines.CONFIG_HARDWARE_PINS
 			);
+			if(utils.isEmpty(destMap)) throw new xConfigException("Pins list is missing from config!");
 			final Map<String,  MetaAddress> strMap = new LinkedHashMap<String,  MetaAddress>();
 			final Map<Integer, MetaAddress> idMap  = new LinkedHashMap<Integer, MetaAddress>();
-			for(final Entry<String, Integer> entry : destMap.entrySet()) {
+			for(final Entry<String, Object> entry : destMap.entrySet()) {
 				final String addrStr = entry.getKey().toLowerCase();
-				final Integer pinInt = entry.getValue();
+				final Object obj = entry.getValue();
+				final Integer pinInt;
+				if(obj instanceof Integer) {
+					pinInt = (Integer) entry.getValue();
+				} else {
+//TODO:
+throw new UnsupportedOperationException("UNFINISHED");
+//					final String str = obj.toString();
+				}
 				final MetaAddress addr = MetaAddress.get(addrStr);
 				strMap.put(addr.getKey(), addr);
 				idMap.put( pinInt,        addr);
 			}
 			this.dests = new DualKeyMapUnmodifiable<String, Integer, MetaAddress>(strMap, idMap);
 		}
-		// hardware key
-		this.key = this.genKey();
 	}
 
 
@@ -101,7 +108,6 @@ public abstract class HardwareConfig extends xConfig implements xHashable {
 		return this.dests.getMapJ();
 	}
 	public List<MetaAddress> getPins() {
-		@SuppressWarnings("unchecked")
 		final Collection<MetaAddress> addrs = this.dests.values();
 		if(utils.isEmpty(addrs))
 			return null;
@@ -114,10 +120,12 @@ public abstract class HardwareConfig extends xConfig implements xHashable {
 
 	@Override
 	public String toString() {
-		return this.key;
+		return this.getKey();
 	}
 	@Override
 	public String getKey() {
+		if(this.key == null)
+			this.key = this.genKey();
 		return this.key;
 	}
 	protected abstract String genKey();

@@ -21,6 +21,7 @@ public class HardwareConfigNet extends HardwareConfig {
 				PluginDefines.CONFIG_HARDWARE_NET_PORT,
 				PluginDefines.DEFAULT_NET_PORT
 		);
+		this.key = this.genKey();
 	}
 
 
@@ -38,8 +39,10 @@ public class HardwareConfigNet extends HardwareConfig {
 	protected String genKey() {
 		return (new StringBuilder())
 				.append(this.getHost())
-				.append(':').append(this.getPort())
-				.append("#").append(this.getId())
+				.append(':')
+				.append(this.getPort())
+				.append("#")
+				.append(this.getId())
 				.toString();
 	}
 
