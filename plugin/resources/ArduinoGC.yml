@@ -1,22 +1,22 @@
 Hardware:
-    - Type: USB
-      Name: 'aaa'
-      Title: 'test device usb'
-      Enabled: true
-      id: 2
-      Port: /dev/ttyUSB0
-      Baud: 9600
-      Pins:
-        - aaa: 7
-          bbb: 8
-          ccc: 9
-    - Type: NET
-      Name: 'bbb'
-      Title: 'test device tcp'
-      Enabled: false
-      id: 11
-      Host: 192.168.11.50
-      Port: 23
-      Pins:
-        - yyy: 6
-          zzz: 7
+  - Type: USB
+    Name: 'DeviceA'
+    Title: 'test device usb'
+    Enabled: true
+    id: 2
+    Port: /dev/ttyUSB0
+    Baud: 9600
+    Pins:
+        aaa: 7
+        bbb: 8
+        ccc: 9
+  - Type: NET
+    Name: 'DeviceB'
+    Title: 'test device tcp'
+    Enabled: false
+    id: 11
+    Host: 192.168.11.50
+    Port: 23
+    Pins:
+        yyy: 6
+        zzz: 7
