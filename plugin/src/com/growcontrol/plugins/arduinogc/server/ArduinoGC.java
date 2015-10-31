@@ -27,13 +27,18 @@ public class ArduinoGC extends apiServerPlugin {
 	@Override
 	protected void onEnable() {
 		// load config
-		this.config = (PluginConfig) xConfig.Load(
-				getLogger(),
-				PluginDefines.CONFIG_PATH,
-				PluginDefines.CONFIG_FILE,
-				PluginConfig.class,
-				ArduinoGC.class
-		);
+		try {
+			this.config = (PluginConfig) xConfig.Load(
+					getLogger(),
+					PluginDefines.CONFIG_PATH,
+					PluginDefines.CONFIG_FILE,
+					PluginConfig.class,
+					ArduinoGC.class
+			);
+		} catch (xConfigException e) {
+			this.log().trace(e);
+			this.config = null;
+		}
 		if(this.config == null) {
 			this.fail("Failed to load "+PluginDefines.CONFIG_FILE);
 			return;
@@ -41,19 +46,17 @@ public class ArduinoGC extends apiServerPlugin {
 		if(this.config.isFromResource())
 			xLog.getRoot(LOG_NAME).warning("Created default "+PluginDefines.CONFIG_FILE);
 		// start hardware
-		try {
-			final Map<String, HardwareConfig> hardwareConfigs =
-					this.config.getHardwareConfigs();
-			final Set<ArduinoConnection> connections =
-					ArduinoConnection.loadAll(
-							hardwareConfigs
-					);
-			Keeper.add(connections);
-		} catch (xConfigException e) {
-			this.log().trace(e);
-			this.fail(e.getMessage());
+		final Map<String, HardwareConfig> hardwareConfigs =
+				this.config.getHardwareConfigs();
+		final Set<ArduinoConnection> connections =
+				ArduinoConnection.loadAll(
+						hardwareConfigs
+				);
+		if(connections == null) {
+			this.fail("Failed to start hardware connections!");
 			return;
 		}
+		Keeper.add(connections);
 		// register listeners
 		this.register(new Commands());
 	}
