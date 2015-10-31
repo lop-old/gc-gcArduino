@@ -1,5 +1,6 @@
 package com.growcontrol.plugins.arduinogc.server.configs;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +16,7 @@ public class PluginConfig extends xConfig {
 
 	public final String version;
 
-	private volatile Map<String, HardwareConfig> hardwareConfigs = null;
-	private final Object configLock = new Object();
+	private final Map<String, HardwareConfig> hardwareConfigs;
 
 
 
@@ -24,6 +24,45 @@ public class PluginConfig extends xConfig {
 			throws xConfigException {
 		super(datamap);
 		this.version = this.getString(gcCommonDefines.CONFIG_VERSION);
+		this.hardwareConfigs = this.loadHardwareConfigs();
+	}
+	// hardware configs
+	private Map<String, HardwareConfig> loadHardwareConfigs()
+			throws xConfigException {
+		final Set<Object> dataset = this.getSet(
+				Object.class,
+				PluginDefines.CONFIG_HARDWARE
+		);
+		final Map<String, HardwareConfig> configs = new LinkedHashMap<String, HardwareConfig>();
+		for(final Object obj : dataset) {
+			final Map<String, Object> datamap = utilsObject.castMap(
+					String.class,
+					Object.class,
+					obj
+			);
+			final String typeStr = (String) datamap.get(PluginDefines.CONFIG_HARDWARE_TYPE);
+			final HardwareConfig cfg;
+			switch(typeStr.toUpperCase()) {
+			case "USB":
+			case "SERIAL": {
+				cfg = new HardwareConfigSerial(datamap);
+				break;
+			}
+			case "NET":
+			case "TCP":
+			case "ETHERNET":
+			case "WIFI":
+			case "WEB": {
+				cfg = new HardwareConfigNet(datamap);
+				break;
+			}
+			default: {
+				throw new xConfigException("Unknown hardware type: "+typeStr);
+			}
+			}
+			configs.put(cfg.getKey(), cfg);
+		}
+		return Collections.unmodifiableMap(configs);
 	}
 
 
@@ -32,51 +71,7 @@ public class PluginConfig extends xConfig {
 	public String getVersion() {
 		return this.version;
 	}
-
-
-
-	// hardware configs
-	public Map<String, HardwareConfig> getHardwareConfigs()
-			throws xConfigException {
-		if(this.hardwareConfigs == null) {
-			synchronized(this.configLock){
-				if(this.hardwareConfigs == null) {
-					final Set<Object> dataset = this.getSet(
-							Object.class,
-							PluginDefines.CONFIG_HARDWARE
-					);
-					final Map<String, HardwareConfig> configs = new LinkedHashMap<String, HardwareConfig>();
-					for(final Object obj : dataset) {
-						final Map<String, Object> datamap = utilsObject.castMap(
-								String.class,
-								Object.class,
-								obj
-						);
-						final String typeStr = (String) datamap.get(PluginDefines.CONFIG_HARDWARE_TYPE);
-						final HardwareConfig cfg;
-						switch(typeStr.toUpperCase()) {
-						case "USB":
-						case "SERIAL": {
-							cfg = new HardwareConfigSerial(datamap);
-							break;
-						}
-						case "NET":
-						case "TCP":
-						case "ETHERNET":
-						case "WIFI":
-						case "WEB": {
-							cfg = new HardwareConfigNet(datamap);
-							break;
-						}
-						default: {
-							throw new xConfigException("Unknown hardware type: "+typeStr);
-						}
-						}
-						configs.put(cfg.getKey(), cfg);
-					}
-				}
-			}
-		}
+	public Map<String, HardwareConfig> getHardwareConfigs() {
 		return this.hardwareConfigs;
 	}
 
