@@ -209,9 +209,9 @@ System.out.println("SENDING: "+msg);
 	@Override
 	public void onMetaEvent(final MetaEvent event) {
 		final MetaAddress destAddr = event.destination;
+		if(destAddr == null) throw new NullPointerException("Unexpected null destination address!");
 		final String destAddrStr = destAddr.getKey();
-		if(destAddr == null || utils.isEmpty(destAddrStr))
-			throw new NullPointerException("Unexpected null destination address!");
+		if(utils.isEmpty(destAddrStr)) throw new NullPointerException("Unexpected null destination address!");
 		// not for this connection
 		if(!this.serialConfig.dests.containsKeyK(destAddrStr))
 			return;

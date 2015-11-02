@@ -8,7 +8,7 @@ public class ArduinoPin {
 
 
 	protected volatile int     number;
-	protected volatile PinMode mode;
+	protected volatile PinMode pinMode;
 	protected volatile int     state = 0;
 
 
@@ -16,24 +16,24 @@ public class ArduinoPin {
 //	public ArduinoPin() {
 //		this(-1, null);
 //	}
-	public ArduinoPin(final int number, final PinMode mode) {
+	public ArduinoPin(final int number, final PinMode pinMode) {
 		if(number < 0) throw new IllegalArgumentException("Pin number out of range! Cannot be less than 0.");
 		if(pinMode == null) throw new RequiredArgumentException("pinMode");
 		this.number = number;
-		this.mode = mode;
+		this.pinMode = pinMode;
 	}
 
 
 
-	public void setMode(final String modeStr) {
-		final PinMode mode = PinMode.fromString(modeStr);
-		if(mode == null) throw new IllegalArgumentException("Unknown pin mode: "+modeStr);
-		this.setMode(mode);
+	public void setMode(final String pinModeStr) {
 		if(utils.isEmpty(pinModeStr)) throw new RequiredArgumentException("pinModeStr");
+		final PinMode pinMode = PinMode.fromString(pinModeStr);
+		if(pinMode == null) throw new IllegalArgumentException("Unknown pin mode: "+pinModeStr);
+		this.setMode(pinMode);
 	}
-	public void setMode(final PinMode mode) {
-		this.mode = mode;
+	public void setMode(final PinMode pinMode) {
 		if(pinMode == null) throw new RequiredArgumentException("pinMode");
+		this.pinMode = pinMode;
 	}
 
 
