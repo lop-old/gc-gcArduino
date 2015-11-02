@@ -55,7 +55,7 @@ public class ConnectionSerial extends ArduinoConnection implements SerialPortEve
 		super(config);
 //	public ConnectionSerial(final String portName, final int baud) {
 //		super();
-//		if(utils.isEmpty(portName)) throw new NullPointerException("portName argument is required!");
+//		if(utils.isEmpty(portName)) throw new RequiredArgumentException("portName");
 //		if(!isValidBaud(baud))      throw new IllegalArgumentException("Invalid baud rate: "+Integer.toString(baud));
 //		this.portName = portName;
 //		this.baud     = baud;

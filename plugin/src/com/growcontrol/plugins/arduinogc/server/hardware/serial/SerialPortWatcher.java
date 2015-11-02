@@ -9,6 +9,7 @@ import jssc.SerialPortList;
 
 import com.poixson.commonjava.Utils.CoolDown;
 import com.poixson.commonjava.Utils.Keeper;
+import com.poixson.commonjava.Utils.exceptions.RequiredArgumentException;
 import com.poixson.commonjava.xLogger.xLog;
 
 
@@ -87,7 +88,7 @@ public final class SerialPortWatcher {
 //	}
 	public void addListener(final SerialPortWatchListener listener,
 			final boolean triggerExisting) {
-		if(listener == null) throw new NullPointerException("listener argument is required!");
+		if(listener == null) throw new RequiredArgumentException("listener");
 		if(triggerExisting) {
 			final String[] current;
 			synchronized(this.updateLock) {

@@ -1,6 +1,7 @@
 package com.growcontrol.plugins.arduinogc.server.hardware.serialcontrol;
 
 import com.poixson.commonjava.Utils.utils;
+import com.poixson.commonjava.Utils.exceptions.RequiredArgumentException;
 
 
 public enum PinMode {
@@ -21,7 +22,7 @@ public enum PinMode {
 
 
 	PinMode(final String value) {
-		if(utils.isEmpty(value)) throw new NullPointerException("value argument is required!");
+		if(utils.isEmpty(value)) throw new RequiredArgumentException("value");
 		this.value = value;
 	}
 

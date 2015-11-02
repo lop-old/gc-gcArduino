@@ -30,7 +30,7 @@ public class ConnectionNet extends ArduinoConnection {
 		super(config);
 //	public ConnectionNet(final String host, final int port) {
 //		super();
-//		if(utils.isEmpty(host)) throw new NullPointerException("host argument is required!");
+//		if(utils.isEmpty(host)) throw new RequiredArgumentException("host");
 //		this.host = host;
 //		this.port = port;
 		this.netConfig = (HardwareConfigNet) config;
