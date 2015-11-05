@@ -1,5 +1,5 @@
 Plugin Name: ArduinoGC
-Plugin Version: 5.6.1
+Plugin Version: 3.6.1
 Server Main: com.growcontrol.plugins.arduinogc.server.ArduinoGC.class
 Client Main: com.growcontrol.plugins.arduinogc.client.ArduinoGC.class
 Author: lorenzop
