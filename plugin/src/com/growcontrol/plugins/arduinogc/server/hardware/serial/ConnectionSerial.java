@@ -213,7 +213,7 @@ System.out.println("SENDING: "+msg);
 		final String destAddrStr = destAddr.getKey();
 		if(utils.isEmpty(destAddrStr)) throw new NullPointerException("Unexpected null destination address!");
 		// not for this connection
-		if(!this.serialConfig.dests.containsKeyK(destAddrStr))
+		if(!this.serialConfig.containsAddr(destAddrStr))
 			return;
 		final MetaType value = event.value;
 		if(value == null) throw new NullPointerException("Unexpected null meta value!");

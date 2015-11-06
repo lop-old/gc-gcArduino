@@ -118,6 +118,18 @@ throw new UnsupportedOperationException("UNFINISHED");
 
 
 
+	public boolean containsAddr(final String addr) {
+		return this.dests.containsKeyK(addr);
+	}
+	public boolean containsPinId(final int id) {
+		return this.dests.containsKeyJ(new Integer(id));
+	}
+	public boolean containsMetaAddress(final MetaAddress addr) {
+		return this.dests.containsValue(addr);
+	}
+
+
+
 	@Override
 	public String toString() {
 		return this.getKey();

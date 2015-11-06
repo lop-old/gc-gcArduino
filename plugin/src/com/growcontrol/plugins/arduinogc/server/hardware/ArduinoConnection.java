@@ -157,9 +157,10 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 	public Integer DestAddressToPin(final String addressStr) {
 		final MetaAddress address = MetaAddress.get(addressStr);
 		final String addrStr = address.getKey();
-		if(!this.config.dests.containsKeyK(addrStr))
+		if(!this.config.containsAddr(addrStr))
 			return null;
-		for(final Entry<Integer, MetaAddress> entry : this.config.dests.entrySetJ()) {
+		final Map<Integer, MetaAddress> pinsById = this.config.getPinsById();
+		for(final Entry<Integer, MetaAddress> entry : pinsById.entrySet()) {
 			final int         pin  = entry.getKey().intValue();
 			final MetaAddress addr = entry.getValue();
 			if(addr.matches(address))
@@ -232,7 +233,8 @@ System.out.println("RECEIVED: "+line);
 					.info("Found arduino version: "+line.substring(4));
 			// register destination addresses
 			final MetaRouter router = MetaRouter.get();
-			for(final Entry<Integer, MetaAddress> entry : this.config.dests.entrySetJ()) {
+			final Map<Integer, MetaAddress> pinsById = this.config.getPinsById();
+			for(final Entry<Integer, MetaAddress> entry : pinsById.entrySet()) {
 				final MetaAddress address = entry.getValue();
 				router.register(
 						address,
