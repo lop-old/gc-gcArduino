@@ -13,7 +13,6 @@ import com.growcontrol.plugins.arduinogc.PluginDefines;
 import com.poixson.commonapp.config.xConfig;
 import com.poixson.commonapp.config.xConfigException;
 import com.poixson.commonjava.Utils.DualKeyMap;
-import com.poixson.commonjava.Utils.DualKeyMapUnmodifiable;
 import com.poixson.commonjava.Utils.utils;
 import com.poixson.commonjava.Utils.xHashable;
 
@@ -80,7 +79,12 @@ throw new UnsupportedOperationException("UNFINISHED");
 				strMap.put(addr.getKey(), addr);
 				idMap.put( pinInt,        addr);
 			}
-			this.dests = new DualKeyMapUnmodifiable<String, Integer, MetaAddress>(strMap, idMap);
+			{
+				final DualKeyMap<String, Integer, MetaAddress> dualMap =
+						new DualKeyMap<String, Integer, MetaAddress>(strMap, idMap);
+				this.dests = dualMap
+						.setFinal();
+			}
 		}
 	}
 
