@@ -60,7 +60,7 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 		synchronized(connections) {
 			if(connections.containsKey(key))
 				return connections.get(key);
-			final ArduinoConnection connect = ArduinoConnection.load(config);
+			final ArduinoConnection connect = load(config);
 			if(connect == null)
 				return null;
 //			connect.dests.putAll(config.getPins());
@@ -112,12 +112,12 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 		int failed = 0;
 		for(final HardwareConfig cfg : configs.values()) {
 			if(!cfg.isEnabled()) {
-				log().fine("Arduino device is disabled: "+cfg.getKey()+" - "+cfg.getName());
+				log().finer("Arduino device is disabled: "+cfg.getKey()+" - "+cfg.getName());
 				continue;
 			}
 			ArduinoConnection connect = null;
 			try {
-				connect = ArduinoConnection.get(cfg);
+				connect = get(cfg);
 			} catch (Exception e) {
 				connect = null;
 				log().trace(e);
@@ -128,8 +128,8 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 			} else {
 				count++;
 				log().info("Successfully connected to: "+cfg.getKey()+" - "+cfg.getName());
+				connections.add(connect);
 			}
-			connections.add(connect);
 		}
 		if(count > 0)
 			log().info("Connecting to [ "+Integer.toString(count)+" ] devices..");
