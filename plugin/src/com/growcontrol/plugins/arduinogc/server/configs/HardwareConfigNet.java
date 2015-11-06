@@ -8,8 +8,8 @@ import com.poixson.commonapp.config.xConfigException;
 
 public class HardwareConfigNet extends HardwareConfig {
 
-	public final String host;
-	public final int    port;
+	private final String host;
+	private final int    port;
 
 
 

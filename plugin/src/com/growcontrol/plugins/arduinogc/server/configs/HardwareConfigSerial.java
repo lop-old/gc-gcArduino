@@ -8,8 +8,8 @@ import com.poixson.commonapp.config.xConfigException;
 
 public class HardwareConfigSerial extends HardwareConfig {
 
-	public final String port;
-	public final int    baud;
+	private final String port;
+	private final int    baud;
 
 
 

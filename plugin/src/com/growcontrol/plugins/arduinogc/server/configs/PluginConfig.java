@@ -14,7 +14,7 @@ import com.poixson.commonjava.Utils.utilsObject;
 
 public class PluginConfig extends xConfig {
 
-	public final String version;
+	private final String version;
 
 	private final Map<String, HardwareConfig> hardwareConfigs;
 

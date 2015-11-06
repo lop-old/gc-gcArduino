@@ -20,14 +20,14 @@ import com.poixson.commonjava.Utils.xHashable;
 
 public abstract class HardwareConfig extends xConfig implements xHashable {
 
-	public final String name;
-	public final String title;
-	public final boolean enabled;
-	public final int id;
-
-	public final DualKeyMap<String, Integer, MetaAddress> dests;
-
 	protected volatile String key = null;
+
+	private final String name;
+	private final String title;
+	private final boolean enabled;
+	private final int id;
+
+	private final DualKeyMap<String, Integer, MetaAddress> dests;
 
 
 
@@ -124,8 +124,6 @@ throw new UnsupportedOperationException("UNFINISHED");
 	}
 	@Override
 	public String getKey() {
-		if(this.key == null)
-			this.key = this.genKey();
 		return this.key;
 	}
 	protected abstract String genKey();

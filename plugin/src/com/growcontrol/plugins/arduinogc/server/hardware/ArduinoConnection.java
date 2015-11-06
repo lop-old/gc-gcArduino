@@ -111,8 +111,8 @@ public abstract class ArduinoConnection implements MetaListener, xCloseable, xHa
 		int count  = 0;
 		int failed = 0;
 		for(final HardwareConfig cfg : configs.values()) {
-			if(!cfg.enabled) {
-				log().fine("Arduino device is disabled: "+cfg.getKey()+" - "+cfg.name);
+			if(!cfg.isEnabled()) {
+				log().fine("Arduino device is disabled: "+cfg.getKey()+" - "+cfg.getName());
 				continue;
 			}
 			ArduinoConnection connect = null;
