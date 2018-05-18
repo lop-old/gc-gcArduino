@@ -1,7 +1,7 @@
-Plugin Name: ArduinoGC
-Plugin Version: 3.6.1
-Server Main: com.growcontrol.plugins.arduinogc.server.ArduinoGC.class
-Client Main: com.growcontrol.plugins.arduinogc.client.ArduinoGC.class
+Plugin Name: gcArduino
+App Version: 3.6.2
+Server Main: com.growcontrol.plugins.gcarduino.server.gcArduino.class
+Client Main: com.growcontrol.plugins.gcarduino.client.gcArduino.class
 Author: lorenzop
 Website: http://growcontrol.com/
 Depend: []
