@@ -2,44 +2,45 @@
 	"Name": "gcArduino",
 	"ArtifactId": "gcarduino",
 	"GroupId": "com.growcontrol.plugins",
-	"Version": "3.6.2",
+	"Version": "1.5.0",
+	"pxnVersion": "3.6.2",
 	"URL": "http://growcontrol.com",
 	"Github-Path": "GrowControl/gcArduino",
 	"Org-Name": "GrowControl",
 	"Deps": {
-		"pxnCommon": {
+		"pxnCommon-Core": {
 			"GroupId": "com.poixson",
-			"ArtifactId": "common",
-			"Name": "pxnCommon",
-			"Version": "${project.version}",
+			"ArtifactId": "common-core",
+			"Name": "pxnCommon-Core",
+			"Version": "${pxnVersion}",
 			"Scope": "provided"
 		},
 		"pxnCommon-Config": {
 			"GroupId": "com.poixson",
 			"ArtifactId": "common-config",
 			"Name": "pxnCommon-Config",
-			"Version": "${project.version}",
+			"Version": "${pxnVersion}",
 			"Scope": "provided"
 		},
 		"pxnCommon-Scheduler": {
 			"GroupId": "com.poixson",
 			"ArtifactId": "common-sched",
 			"Name": "pxnCommon-Scheduler",
-			"Version": "${project.version}",
+			"Version": "${pxnVersion}",
 			"Scope": "provided"
 		},
 		"gcServer": {
 			"GroupId": "com.growcontrol",
 			"ArtifactId": "server",
 			"Name": "gcServer",
-			"Version": "${project.version}",
+			"Version": "${pxnVersion}",
 			"Scope": "provided"
 		},
 		"gcClient": {
 			"GroupId": "com.growcontrol",
 			"ArtifactId": "client",
 			"Name": "gcClient",
-			"Version": "${project.version}",
+			"Version": "${pxnVersion}",
 			"Scope": "provided"
 		},
 		"Quartz": {

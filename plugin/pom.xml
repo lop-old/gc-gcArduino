@@ -1,4 +1,4 @@
-<!-- Generated on: May 18, 2018 18:16 UTC -->
+<!-- Generated on: May 20, 2018 08:22 UTC -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -7,7 +7,7 @@
 	<name>gcArduino</name>
 	<artifactId>gcarduino</artifactId>
 	<groupId>com.growcontrol.plugins</groupId>
-	<version>3.6.2</version>
+	<version>1.5.0</version>
 	<packaging>jar</packaging>
 	<url>http://growcontrol.com</url>
 
@@ -32,22 +32,21 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<pxnCommon-version>${project.version}</pxnCommon-version>
-		<pxnCommon-Config-version>${project.version}</pxnCommon-Config-version>
-		<pxnCommon-Scheduler-version>${project.version}</pxnCommon-Scheduler-version>
-		<gcServer-version>${project.version}</gcServer-version>
-		<gcClient-version>${project.version}</gcClient-version>
+		<pxnVersion>3.6.2</pxnVersion>
+
+		<pxnCommon-Core-version>${pxnVersion}</pxnCommon-Core-version>
+		<pxnCommon-Config-version>${pxnVersion}</pxnCommon-Config-version>
+		<pxnCommon-Scheduler-version>${pxnVersion}</pxnCommon-Scheduler-version>
+		<gcServer-version>${pxnVersion}</gcServer-version>
+		<gcClient-version>${pxnVersion}</gcClient-version>
 		<Quartz-version>2.3.0</Quartz-version>
 		<snakeyaml-version>1.21</snakeyaml-version>
 
 		<git-commit-id-plugin-version>2.2.2</git-commit-id-plugin-version>
-
 		<maven-resources-plugin-version>3.0.2</maven-resources-plugin-version>
 		<maven-compiler-plugin-version>3.3</maven-compiler-plugin-version>
 		<maven-jar-plugin-version>2.6</maven-jar-plugin-version>
-
 		<maven-source-plugin-version>2.4</maven-source-plugin-version>
-
 		<maven-eclipse-plugin-version>2.10</maven-eclipse-plugin-version>
 
 		<junit-version>4.12</junit-version>
@@ -160,8 +159,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.poixson</groupId>
-			<artifactId>common</artifactId>
-			<version>${pxnCommon-version}</version>
+			<artifactId>common-core</artifactId>
+			<version>${pxnCommon-Core-version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

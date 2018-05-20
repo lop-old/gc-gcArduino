@@ -3,7 +3,7 @@
 //#      for GrowControl
 //#
 //# Supported software versions:
-//#   GrowControl 3.5
+//#   GrowControl 3.6.x
 //#
 //# Version:
 //#   1.5.0 - Initial release based on SerialControl sketch.
